@@ -1,0 +1,108 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+body{
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white;
+    min-height: 100vh;
+}
+.sidebar{
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    width: 200px;
+    /* height: calc(100vh); */
+    /* border: 1px solid red; */
+}
+
+.titleProject{
+    height: 65px;
+    /* border: 1px solid black; */
+}
+/* .footer{
+    height: 50px;
+} */
+.menu{
+    margin-top: 25px;
+    height: calc(100vh - 125px);
+    /* border: 1px solid blue; */
+}
+.sidebar .menu a, button{
+    color: white;
+}
+.sidebar .menu a:hover{
+    color: black;
+    background-color: #0b5ed7;
+}
+.sidebar .menu nav div a:hover{
+    color: black;
+    background-color: #0b5ed7 !important;
+}
+
+.menu nav button:hover{
+    color: black !important;
+}
+
+.bodyAuth{
+    height: 100vh;
+}
+.bodyApp{
+    right: 0;
+    position: sticky;
+    margin-left: 200px;
+    height: 100vh;
+    width: calc(100% - 200px);
+}
+.content{
+    top: 0;
+    margin-top: 0;
+    height: calc(100vh -65px);
+}
+
+
+footer{
+    right: 0;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 0;
+    width: calc(100% - 200px);
+    height:45px;
+    background-color: #f8f9fa;
+}
+.cardB{
+    width: 10em;
+}
+.cardFils:hover{
+    border: 1px solid white;
+    background-color: #0b5ed7;
+    color: white !important;
+}
+
+.cardFils{
+    height: 90px !important;
+}
+
+
+section{
+    height: 47em;
+}
+
+.sectionBody{
+    height: 41em;
+}
+
+.chatBox{
+    /* margin-bottom: 70px; */
+    height: 400px;
+}
+
+@media screen and (max-width: 500px) {
+  .sidebar {
+    display: none;
+  }
+  .content{
+    width: 100%;
+    display: block;
+  }
+}
