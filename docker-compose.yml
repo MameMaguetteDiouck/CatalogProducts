@@ -39,6 +39,7 @@ services:
       MONGODB_PASSWORD: catalog_secret
     volumes:
       - mongo_data:/data/db
+      - mongo_config:/data/configdb
       - ./docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
@@ -69,11 +70,13 @@ services:
 
 volumes:
   mongo_data:
-    driver: local
+    name: catalog_mongo_data
+  mongo_config:
+    name: catalog_mongo_config
   app_vendor:
-    driver: local
+    name: catalog_app_vendor
   app_node_modules:
-    driver: local
+    name: catalog_app_node_modules
 
 networks:
   catalog_network:
