@@ -1,19 +1,40 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-.env
-.env.backup
-.env.production
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
+# Système & Éditeurs
+.DS_Store
+Thumbs.db
 /.fleet
 /.idea
 /.vscode
+
+# Environnement & Données sensibles
+.env
+.env.*
+!.env.example
+auth.json
+Homestead.json
+Homestead.yaml
+
+# Dépendances & Paquets
+/vendor
+/node_modules
+
+# Compilation & Builds
+/public/build
+/public/hot
+.vite
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Stockage & Fichiers générés
+/public/storage
+/storage/*.key
+/.phpunit.cache
+.phpunit.result.cache
+
+# Uploads & Médias locaux (ne pas versionner les uploads)
+/public/images/*
+!/public/images/.gitkeep
+
+# Docker & Volumes de données locaux
+/docker/data
+mongo_data/
