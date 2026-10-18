@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->string('type')->index();
             $table->string('libelle')->unique();
             $table->double('prix');
-            $table->integer('stock');
-            $table->string('unite');
-            $table->string('categorie');
-            $table->string('garantie');
-            $table->string('marque');
-            $table->string('taille');
-            $table->double('quantite');
-            $table->string('description');
+            $table->integer('stock')->default(0);
+            $table->string('unite')->nullable();
+            $table->string('categorie')->nullable();
+            $table->string('garantie')->nullable();
+            $table->string('marque')->nullable();
+            $table->string('taille')->nullable();
+            $table->double('quantite')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
