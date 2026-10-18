@@ -1,469 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MyCatalog</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>MyCatalog - Catalogue Produits NoSQL</title>
+    @vite(['resources/sass/app.scss', 'resources/js/app.js', 'resources/css/app.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="min-vh-100">
-    <header class="navbar container-fluid bg-black">
-        <div class="text-white text-center ms-5">
-            <h4>MyCatalog</h4>
-        </div>
-        <div class="me-5">
-            <form class="d-flex" role="search" action="{{ route('products.search', 'welcome') }}" method="POST">
-                @csrf
-                <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search" />
-                <button class="btn btn-outline-success" type="submit">Search</button>
+<body class="bg-light min-vh-100 d-flex flex-column">
+    <!-- Navbar supérieure -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center" href="{{ route('home') }}">
+                <i class="bi bi-box-seam me-2 text-primary"></i>MyCatalog
+            </a>
+
+            <div class="d-flex flex-grow-1 mx-lg-5 my-2 my-lg-0">
+                <form class="d-flex w-100" role="search" action="{{ route('products.index') }}" method="GET">
+                    <input class="form-control me-2" name="search" type="search" placeholder="Rechercher un produit, une marque..." aria-label="Rechercher" />
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
                 @guest
-                    <a class="btn btn-outline-primary ms-2" href="{{ route('login') }}">Connexion</a>
+                    <a class="btn btn-outline-primary" href="{{ route('login') }}">
+                        <i class="bi bi-person me-1"></i> Connexion
+                    </a>
                 @endguest
                 @auth
-                    <a class="btn btn-outline-primary ms-2" href="{{ route('products.index') }}">Acueill</a>
+                    <a class="btn btn-primary" href="{{ route('products.index') }}">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
                 @endauth
-            </form>
+            </div>
         </div>
     </header>
-    @if ($searches)
-        <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary text-black w-100">
-            <div class="container w-100">
-                <ul class="navbar-nav flex-row w-100 justify-content-start">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{url('/')}}">Home</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="d-flex align-items-center justify-content-center m-3">
-            <h4>Résultat de la recherche</h4>
-        </div>
-        <div class="container sectionBody">
-            <div class="row justify-content-center">
-                @foreach ($searches as $search)
-                    <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                        <div class="card" style="width: 18rem; height: 20em;">
-                            <img src="{{ asset($search->image) }}" class="card-img-top" alt="Non disponible..."
-                                style="height:10em;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $search->libelle }}</h5>
-                                {{-- <p class="card-text">{{ $aliment->description }}</p> --}}
-                                <p>{{ $search->prix }} FrancCFA</p>
 
-                                <div class="d-flex justify-content-between align-items-center">
-                                    @if ($search->stock != 0)
-                                        <button class="btn btn-success">
-                                            disponible
-                                        </button>
-                                    @else
-                                        <button class="btn btn-danger">
-                                            Indisponible
-                                        </button>
-                                    @endif
-                                    <i class="bi bi-eye me-3 text-primary fs-3" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModalCenter-{{ $search->id }}"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModalCenter-{{ $search->id }}" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header justify-content-between">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">{{ $search->libelle }}</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <img src="{{ $search->image }}" alt="Non disponible" width="150px">
-                                    </div>
-                                    <p>Catégorie : {{ $search->categorie }} {{ $search->categorie }}</p>
-                                    <p>Quantité : {{ $search->quantite }} {{ $search->unite }}</p>
-                                    <p>Prix : {{ $search->prix }} FrancCFA</p>
-                                    <p>Description : {{ $search->description }}</p>
-                                </div>
-                                <div class="modal-footer justify-content-end">
-                                    <button type="button" class="btn btn-danger"
-                                        data-bs-dismiss="modal">fermer</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
+    <!-- Bannière Hero -->
+    <section class="bg-primary text-white py-5 shadow-sm">
+        <div class="container text-center py-3">
+            <span class="badge bg-light text-primary px-3 py-2 rounded-pill fw-bold mb-3 text-uppercase">
+                Architecture NoSQL • Laravel 11 & MongoDB
+            </span>
+            <h1 class="display-5 fw-bold mb-3">Catalogue de Produits Dynamique</h1>
+            <p class="lead mb-4 mx-auto" style="max-width: 650px;">
+                Chaque catégorie embarque ses propres attributs modulaires (garantie, taille, unités) stockés de manière flexible dans des documents MongoDB.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ route('products.index') }}" class="btn btn-light text-primary fw-bold px-4 py-2">
+                    <i class="bi bi-grid me-1"></i> Explorer le catalogue
+                </a>
             </div>
         </div>
-    @else
-        <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary text-black w-100">
-            <div class="container w-100">
-                <ul class="navbar-nav flex-row w-100 justify-content-start">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#aliments">Aliments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#habits">Habillements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#electros">Electroniques</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#cosmos">Cosmétiques</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#btps">BTPs</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <section id="aliments" class="container mt-2">
-            <div class="d-flex align-items-center justify-content-center m-3">
-                <h4>Aliments</h4>
-            </div>
-            <div class="container sectionBody">
-                <div class="row justify-content-center">
-                    @foreach ($aliments as $aliment)
-                        <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                            <div class="card" style="width: 18rem; height: 20em;">
-                                <img src="{{ asset($aliment->image) }}" class="card-img-top" alt="Non disponible..."
-                                    style="height:10em;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $aliment->libelle }}</h5>
-                                    {{-- <p class="card-text">{{ $aliment->description }}</p> --}}
-                                    <p>{{ $aliment->prix }} FrancCFA</p>
+    </section>
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        @if ($aliment->stock != 0)
-                                            <button class="btn btn-success">
-                                                disponible
-                                            </button>
-                                        @else
-                                            <button class="btn btn-danger">
-                                                Indisponible
-                                            </button>
-                                        @endif
-                                        <i class="bi bi-eye me-3 text-primary fs-3" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalCenter-{{ $aliment->id }}"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter-{{ $aliment->id }}" tabindex="-1"
-                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header justify-content-between">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ $aliment->libelle }}
-                                        </h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                            aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <img src="{{ $aliment->image }}" alt="Non disponible" width="150px">
-                                        </div>
-                                        <p>Catégorie : {{ $aliment->categorie }} {{ $aliment->categorie }}</p>
-                                        <p>Quantité : {{ $aliment->quantite }} {{ $aliment->unite }}</p>
-                                        <p>Prix : {{ $aliment->prix }} FrancCFA</p>
-                                        <p>Description : {{ $aliment->description }}</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-end">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">fermer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+    <!-- Sections par Catégorie -->
+    <main class="container my-5 flex-grow-1">
+        @foreach ($categories as $cat)
+            @php $products = $productsByCategory[$cat->value] ?? collect(); @endphp
+            @if ($products->count() > 0)
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                        <h4 class="fw-bold mb-0 text-dark">
+                            <i class="bi {{ $cat->icon() }} me-2 text-primary"></i>{{ $cat->label() }}
+                        </h4>
+                        <a href="{{ route('products.index', ['category' => $cat->value]) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                            Voir plus ({{ App\Models\Product::countForType($cat->value) }}) <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
 
-                </div>
-            </div>
-            <div class="d-flex align-items-end justify-content-end bottom-0">
-                <a class="btn btn-primary" href="{{ route('products.seeMore', ['aliments']) }}">Voir plus... </a>
-            </div>
-        </section>
-        <section id="habits" class="container mt-2">
-            <div class="d-flex align-items-center justify-content-center m-3">
-                <h4>Habillements</h4>
-            </div>
-            <div class="container sectionBody">
-                <div class="row justify-content-center">
-                    @foreach ($habits as $habit)
-                        <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                            <div class="card" style="width: 18rem; height: 20em;">
-                                <img src="{{ asset($habit->image) }}" class="card-img-top h-50" alt="...">
-                                <div class="card-body h-50">
-                                    <h6 class="card-title" style="height: 30px;">{{ $habit->libelle }}</h6>
-                                    {{-- <p class="card-text">{{ $habit->description }}</p> --}}
-                                    <div class="">
-                                        <p class="">{{ $habit->prix }} FrancCFA</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            @if ($habit->stock != 0)
-                                                <button class="btn btn-success">
-                                                    disponible
-                                                </button>
-                                            @else
-                                                <button class="btn btn-danger">
-                                                    Indisponible
-                                                </button>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                        @foreach ($products as $product)
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="bg-white p-3 text-center rounded-top position-relative">
+                                        <img src="{{ $product->imageUrl() }}" alt="{{ $product->libelle }}" 
+                                             class="img-fluid rounded" style="height: 150px; object-fit: contain;">
+                                    </div>
+                                    <div class="card-body d-flex flex-column p-3">
+                                        <h6 class="card-title fw-bold text-truncate mb-1" title="{{ $product->libelle }}">
+                                            {{ $product->libelle }}
+                                        </h6>
+                                        <p class="text-primary fw-bold fs-5 mb-2">
+                                            {{ number_format($product->prix, 0, ',', ' ') }} FCFA
+                                        </p>
+
+                                        <!-- Spécificités NoSQL -->
+                                        <div class="small text-muted mb-3">
+                                            @if ($product->garantie)
+                                                <div>Garantie : <span class="fw-bold text-dark">{{ $product->garantie }}</span></div>
                                             @endif
-                                            <i class="bi bi-eye text-primary ms-3 fs-3"
-                                                data-bs-target="#exampleModalCenter-{{ $habit->id }}"
-                                                data-bs-toggle="modal"></i>
+                                            @if ($product->taille)
+                                                <div>Taille : <span class="fw-bold text-dark">{{ $product->taille }}</span></div>
+                                            @endif
+                                            @if ($product->unite)
+                                                <div>Unité : <span class="fw-bold text-dark">{{ $product->unite }}</span></div>
+                                            @endif
+                                            @if ($product->marque)
+                                                <div>Marque : <span class="fw-bold text-dark">{{ $product->marque }}</span></div>
+                                            @endif
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter-{{ $habit->id }}" tabindex="-1"
-                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header justify-content-between">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ $habit->libelle }}</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                            aria-bs-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <img src="{{ asset($habit->image) }}" alt="Non disponible"
-                                                width="150px">
+                                        <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                            @if ($product->stock > 0)
+                                                <span class="badge bg-success-subtle text-success small">En stock</span>
+                                            @else
+                                                <span class="badge bg-danger-subtle text-danger small">Rupture</span>
+                                            @endif
+                                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-primary btn-sm">
+                                                Détails
+                                            </a>
                                         </div>
-                                        <p>Marque : {{ $habit->marque }}</p>
-                                        <p>Unité : {{ $habit->unite }}</p>
-                                        <p>Prix : {{ $habit->prix }}</p>
-                                        <p>Description : {{ $habit->description }}</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-end">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">fermer</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex align-items-end justify-content-end bottom-0">
-                <a class="btn btn-primary" href="{{ route('products.seeMore', ['habillements']) }}">Voir plus... </a>
-            </div>
-        </section>
-        <section id="electros" class="container mt-2">
-            <div class="d-flex align-items-center justify-content-center m-3">
-                <h4>Electroniques</h4>
-            </div>
-            <div class="container sectionBody">
-                <div class="row justify-content-center">
-                    @foreach ($electros as $electro)
-                        <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                            <div class="card" style="width: 18rem; height: 20em;">
-                                <img src="{{ asset($electro->image) }}" class="card-img-top" alt="..."
-                                    style="height:10em;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $electro->libelle }}</h5>
-                                    <p>{{ $electro->prix }} FrancCFA</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        @if ($electro->stock != 0)
-                                            <button class="btn btn-success">
-                                                disponible
-                                            </button>
-                                        @else
-                                            <button class="btn btn-danger">
-                                                Indisponible
-                                            </button>
-                                        @endif
-                                        <i class="bi bi-eye me-3 text-primary fs-3" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalCenter-{{ $electro->id }}"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter-{{ $electro->id }}" tabindex="-1"
-                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header justify-content-between">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ $electro->libelle }}
-                                        </h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                            aria-bs-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <img src="{{ asset($electro->image) }}" alt="Non disponible"
-                                                width="150px">
-                                        </div>
-                                        <p>Garantie : {{ $electro->garantie }}</p>
-                                        <p>Prix : {{ $electro->prix }} FrancCFA</p>
-                                        <p>Description : {{ $electro->description }}</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-end">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">fermer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            <div class="d-flex align-items-end justify-content-end bottom-0">
-                <a class="btn btn-primary" href="{{ route('products.seeMore', ['electronique']) }}">Voir plus... </a>
-            </div>
-        </section>
-        <section id="cosmos" class="container mt-2">
-            <div class="d-flex align-items-center justify-content-center m-3">
-                <h4>Cosmétiques</h4>
-            </div>
-            <div class="container sectionBody">
-                <div class="row justify-content-center">
-                    @foreach ($cosmos as $cosmo)
-                        <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                            <div class="card" style="width: 18rem; height: 20em;">
-                                <img src="{{ asset($cosmo->image) }}" class="card-img-top"
-                                    alt="Image non disponible!!!" style="height:10em;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $cosmo->libelle }}</h5>
-                                    <p>{{ $cosmo->prix }} FrancCFA</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        @if ($cosmo->stock != 0)
-                                            <button class="btn btn-success">
-                                                disponible
-                                            </button>
-                                        @else
-                                            <button class="btn btn-danger">
-                                                Indisponible
-                                            </button>
-                                        @endif
-                                        <i class="bi bi-eye me-3 text-primary fs-3" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalCenter-{{ $cosmo->id }}"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter-{{ $cosmo->id }}" tabindex="-1"
-                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header justify-content-between">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ $cosmo->libelle }}</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                            aria-bs-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <img src="{{ asset($cosmo->image) }}" alt="Non disponible"
-                                                width="150px">
-                                        </div>
-                                        <p>Quantité : {{ $cosmo->quantite }} {{ $cosmo->unite }}</p>
-                                        <p>Marque : {{ $cosmo->marque }}</p>
-                                        <p>Prix : {{ $cosmo->prix }} FrancCFA</p>
-                                        <p>Description : {{ $cosmo->description }}</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-end">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">fermer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            <div class="d-flex align-items-end justify-content-end bottom-0">
-                <a class="btn btn-primary" href="{{ route('products.seeMore', ['cosmetiques']) }}">Voir plus... </a>
-            </div>
-        </section>
-        <section id="btps" class="container">
-            <div class="d-flex align-items-center justify-content-center m-3">
-                <h4>BTPs</h4>
-            </div>
-            <div class="container sectionBody">
-                <div class="row justify-content-center">
-                    @foreach ($btps as $btp)
-                        <div class="col-6 col-lg-3 d-flex justify-content-center mb-4">
-                            <div class="card" style="width: 18rem; height: 20em;">
-                                <img src="{{ asset($btp->image) }}" class="card-img-top" alt="Non disponible..."
-                                    style="height:10em;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $btp->libelle }}</h5>
-                                    <p class="card-text">{{ $btp->description }}</p>
-                                    <p>{{ $btp->prix }} FrancCFA</p>
+            @endif
+        @endforeach
+    </main>
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        @if ($btp->stock != 0)
-                                            <button class="btn btn-success">
-                                                disponible
-                                            </button>
-                                        @else
-                                            <button class="btn btn-danger">
-                                                Indisponible
-                                            </button>
-                                        @endif
-                                        <i class="bi bi-eye me-3 text-primary fs-3" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalCenter-{{ $btp->id }}"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModalCenter-{{ $btp->id }}" tabindex="-1"
-                            role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header justify-content-between">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">{{ $btp->libelle }}</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                            aria-bs-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <img src="{{ asset($btp->image) }}" alt="Non disponible" width="150px">
-                                        </div>
-                                        <p>Catégorie : {{ $btp->categorie }} {{ $aliment->categorie }}</p>
-                                        <p>Quantité : {{ $btp->quantite }} {{ $aliment->unite }}</p>
-                                        <p>Prix : {{ $btp->prix }} FrancCFA</p>
-                                        <p>Description : {{ $btp->description }}</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-end">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">fermer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            <div class="d-flex align-items-end justify-content-end bottom-0">
-                <a class="btn btn-primary" href="{{ route('products.seeMore', ['btps']) }}">Voir plus... </a>
-            </div>
-        </section>
-    @endif
-    <footer class="mt-auto">
-        <p class="text-black text-center">&copy; {{ date('Y') }} MameDI. Tous droits réservés.</p>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-1 small">Projet Portfolio GitHub — <strong>CatalogProducts</strong></p>
+            <p class="text-white-50 small mb-0">Développé sous Laravel 11 & Base Documentaire NoSQL MongoDB</p>
+        </div>
     </footer>
 </body>
-
 </html>
