@@ -32,7 +32,9 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin_secret_password
       ME_CONFIG_MONGODB_URL: mongodb://admin:admin_secret_password@mongodb:27017/
-      ME_CONFIG_BASICAUTH: "false"
+      ME_CONFIG_BASICAUTH: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: express_password_123
     depends_on:
       mongodb:
         condition: service_healthy
