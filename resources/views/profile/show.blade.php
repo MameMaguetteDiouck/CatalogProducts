@@ -37,17 +37,13 @@
 
                 <div class="border-top pt-3 text-start small text-muted">
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Statut du compte :</span>
-                        <span class="text-success fw-semibold"><i class="bi bi-patch-check-fill me-1"></i>Actif</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Sécurité de session :</span>
-                        <span class="text-primary fw-semibold"><i class="bi bi-shield-check me-1"></i>Jeton JWT</span>
+                        <span>Statut :</span>
+                        <span class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>Actif</span>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <span>Droits :</span>
+                        <span>Périmètre :</span>
                         <span class="text-dark fw-semibold">
-                            {{ $user->isAdmin() ? 'Accès intégral' : 'Gestion catalogue' }}
+                            {{ $user->isAdmin() ? 'Administration & Équipe' : 'Gestion du catalogue' }}
                         </span>
                     </div>
                 </div>
