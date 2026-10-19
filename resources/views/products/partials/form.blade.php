@@ -51,9 +51,9 @@
 
         <!-- Prix -->
         <div class="col-md-6">
-            <label for="prix" class="form-label fw-semibold small text-muted text-uppercase">Prix unitaire (€) <span class="text-danger">*</span></label>
-            <input type="number" step="0.01" min="0" name="prix" id="prix" class="form-control @error('prix') is-invalid @enderror" 
-                   value="{{ old('prix', $product->prix ?? '') }}" required placeholder="Ex : 199.99">
+            <label for="prix" class="form-label fw-semibold small text-muted text-uppercase">Prix unitaire (FCFA) <span class="text-danger">*</span></label>
+            <input type="number" step="1" min="0" name="prix" id="prix" class="form-control @error('prix') is-invalid @enderror" 
+                   value="{{ old('prix', $product->prix ?? '') }}" required placeholder="Ex : 25000">
             @error('prix')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

@@ -52,6 +52,14 @@ class Product extends Model
     }
 
     /**
+     * Format price with West African CFA Franc (FCFA).
+     */
+    public function formattedPrice(): string
+    {
+        return number_format((float) ($this->prix ?? 0), 0, ',', ' ') . ' FCFA';
+    }
+
+    /**
      * Get the resolved URL for the product image or return an elegant SVG placeholder.
      */
     public function imageUrl(): string

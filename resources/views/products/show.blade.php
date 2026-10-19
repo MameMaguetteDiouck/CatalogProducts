@@ -43,7 +43,7 @@
 
                             <h2 class="fw-bold text-dark mb-2">{{ $product->libelle }}</h2>
                             <div class="fs-3 fw-bold text-dark mb-3">
-                                {{ number_format($product->prix, 2, ',', ' ') }} €
+                                {{ $product->formattedPrice() }}
                             </div>
 
                             <p class="text-muted mb-4 lead" style="font-size: 0.95rem;">

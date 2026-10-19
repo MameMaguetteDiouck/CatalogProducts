@@ -158,7 +158,7 @@
 
                             <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
                                 <div class="fs-5 fw-bold text-dark">
-                                    {{ number_format($product->prix, 2, ',', ' ') }} €
+                                    {{ $product->formattedPrice() }}
                                 </div>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-secondary" title="Consulter">
