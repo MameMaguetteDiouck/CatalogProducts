@@ -84,6 +84,15 @@
                             </li>
                         </ul>
                     </div>
+
+                    <!-- Bouton Déconnexion Direct -->
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1" title="Se déconnecter">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span class="d-none d-sm-inline">Déconnexion</span>
+                        </button>
+                    </form>
                 @endauth
             </div>
         </div>
@@ -104,6 +113,12 @@
                 <a href="{{ route('home') }}" class="text-muted text-decoration-none">Vitrine</a>
                 @auth
                     <a href="{{ route('products.index') }}" class="text-muted text-decoration-none">Espace Gestion</a>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none small">
+                            Déconnexion
+                        </button>
+                    </form>
                 @endauth
                 @guest
                     <a href="{{ route('login') }}" class="text-muted text-decoration-none">Connexion</a>
@@ -112,6 +127,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @yield('insertJS')
 </body>
 </html>
