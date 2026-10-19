@@ -37,7 +37,18 @@ class ProductController extends Controller
             $productsByCategory[$cat->value] = $query->limit(12)->get();
         }
 
-        return view('welcome', compact('categories', 'productsByCategory', 'searchTerm', 'selectedCategory'));
+        $totalCount = Product::count();
+        $inStockCount = Product::inStock()->count();
+        $availabilityRate = $totalCount > 0 ? (int) round(($inStockCount / $totalCount) * 100) : 100;
+
+        return view('welcome', compact(
+            'categories',
+            'productsByCategory',
+            'searchTerm',
+            'selectedCategory',
+            'totalCount',
+            'availabilityRate'
+        ));
     }
 
     /**
@@ -47,6 +58,7 @@ class ProductController extends Controller
     {
         $selectedCategory = $request->query('category') ?? $request->query('type');
         $searchTerm = $request->query('search') ?? $request->query('q');
+        $stockStatus = $request->query('stock_status');
 
         $query = Product::query();
 
@@ -56,6 +68,12 @@ class ProductController extends Controller
 
         if ($searchTerm) {
             $query->search($searchTerm);
+        }
+
+        if ($stockStatus === 'in_stock') {
+            $query->inStock();
+        } elseif ($stockStatus === 'out_of_stock') {
+            $query->outOfStock();
         }
 
         $products = $query->orderBy('_id', 'desc')->paginate(12)->withQueryString();
@@ -71,6 +89,8 @@ class ProductController extends Controller
         }
 
         $totalCount = Product::count();
+        $inStockCount = Product::inStock()->count();
+        $outOfStockCount = Product::outOfStock()->count();
         $categories = ProductCategory::cases();
 
         return view('products.index', compact(
@@ -78,8 +98,11 @@ class ProductController extends Controller
             'categories',
             'selectedCategory',
             'searchTerm',
+            'stockStatus',
             'categoryCounts',
-            'totalCount'
+            'totalCount',
+            'inStockCount',
+            'outOfStockCount'
         ));
     }
 

@@ -120,4 +120,93 @@ class CatalogTest extends TestCase
 
         $created->delete();
     }
+
+    public function test_storing_product_with_zero_stock_saves_as_integer_and_increments_out_of_stock_count(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $initialOutOfStock = Product::outOfStock()->count();
+
+        $productData = [
+            'libelle' => 'Chapeau Traditionnel Test Rupture',
+            'prix' => 12000,
+            'stock' => 0,
+            'type' => 'habillements',
+            'description' => 'Chapeau en paille tressée du Fouta.',
+            'marque' => 'Artisanat Nord',
+            'taille' => 'M',
+        ];
+
+        $response = $this->actingAs($user)->post(route('products.store'), $productData);
+
+        $response->assertRedirect(route('products.index', ['category' => 'habillements']));
+        $response->assertSessionHas('success');
+
+        $created = Product::where('libelle', 'Chapeau Traditionnel Test Rupture')->first();
+        $this->assertNotNull($created);
+        $this->assertSame(0, $created->stock);
+        $this->assertSame(12000.0, (float) $created->prix);
+
+        $newOutOfStock = Product::outOfStock()->count();
+        $this->assertEquals($initialOutOfStock + 1, $newOutOfStock);
+
+        // Management index view should display the out-of-stock count
+        $indexResponse = $this->actingAs($user)->get(route('products.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertViewHas('outOfStockCount', $newOutOfStock);
+
+        $created->delete();
+    }
+
+    public function test_filtering_products_by_stock_status(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        // Filter out of stock
+        $responseOutOfStock = $this->actingAs($user)->get(route('products.index', ['stock_status' => 'out_of_stock']));
+        $responseOutOfStock->assertStatus(200);
+        $responseOutOfStock->assertSee('Ruptures');
+
+        // Filter in stock
+        $responseInStock = $this->actingAs($user)->get(route('products.index', ['stock_status' => 'in_stock']));
+        $responseInStock->assertStatus(200);
+        $responseInStock->assertSee('En stock');
+    }
+
+    public function test_updating_product_stock_from_zero_to_positive_moves_it_to_in_stock(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $product = Product::create([
+            'libelle' => 'Transition Stock Test',
+            'prix' => 8000,
+            'stock' => 0,
+            'type' => 'habillements',
+            'description' => 'Test transition stock description.',
+            'marque' => 'Marque Test',
+        ]);
+
+        $this->assertEquals(0, $product->stock);
+        $outOfStockBefore = Product::outOfStock()->count();
+
+        $response = $this->actingAs($user)->put(route('products.update', $product->id), [
+            'libelle' => 'Transition Stock Test Modifié',
+            'prix' => 8500,
+            'stock' => 10,
+            'type' => 'habillements',
+            'description' => 'Test transition stock description.',
+            'marque' => 'Marque Test',
+        ]);
+
+        $response->assertRedirect();
+        $product->refresh();
+
+        $this->assertSame(10, $product->stock);
+        $this->assertEquals($outOfStockBefore - 1, Product::outOfStock()->count());
+
+        $product->delete();
+    }
 }

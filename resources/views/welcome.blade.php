@@ -31,11 +31,11 @@
                     <div class="card border rounded-4 p-3 shadow-sm bg-light">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                             <div>
-                                <div class="fs-4 fw-bold text-dark">{{ App\Models\Product::count() }}</div>
+                                <div class="fs-4 fw-bold text-dark">{{ $totalCount }}</div>
                                 <div class="small text-muted">Références actives</div>
                             </div>
                             <div class="text-end">
-                                <div class="fs-4 fw-bold text-success">100%</div>
+                                <div class="fs-4 fw-bold text-success">{{ $availabilityRate }}%</div>
                                 <div class="small text-muted">Disponibilité</div>
                             </div>
                         </div>

@@ -52,6 +52,30 @@ class Product extends Model
     }
 
     /**
+     * Mutator ensuring stock is stored as a native BSON integer in MongoDB.
+     */
+    public function setStockAttribute($value): void
+    {
+        $this->attributes['stock'] = (int) $value;
+    }
+
+    /**
+     * Mutator ensuring price is stored as a native BSON float/double in MongoDB.
+     */
+    public function setPrixAttribute($value): void
+    {
+        $this->attributes['prix'] = (float) $value;
+    }
+
+    /**
+     * Mutator ensuring quantity is stored as a native BSON integer or null.
+     */
+    public function setQuantiteAttribute($value): void
+    {
+        $this->attributes['quantite'] = ($value !== null && $value !== '') ? (int) $value : null;
+    }
+
+    /**
      * Format price with West African CFA Franc (FCFA).
      */
     public function formattedPrice(): string
@@ -137,14 +161,35 @@ class Product extends Model
     }
 
     /**
+     * Scope to filter in-stock products (stock > 0).
+     */
+    public function scopeInStock($query)
+    {
+        return $query->where('stock', '>', 0);
+    }
+
+    /**
+     * Scope to filter out-of-stock products (stock <= 0 or null).
+     */
+    public function scopeOutOfStock($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('stock', '<=', 0)
+              ->orWhere('stock', null);
+        });
+    }
+
+    /**
      * Scope to search products by text query.
      */
     public function scopeSearch($query, ?string $term)
     {
         if (!empty($term)) {
-            return $query->where('libelle', 'like', "%{$term}%")
-                         ->orWhere('description', 'like', "%{$term}%")
-                         ->orWhere('marque', 'like', "%{$term}%");
+            return $query->where(function ($q) use ($term) {
+                $q->where('libelle', 'like', "%{$term}%")
+                  ->orWhere('description', 'like', "%{$term}%")
+                  ->orWhere('marque', 'like', "%{$term}%");
+            });
         }
         return $query;
     }

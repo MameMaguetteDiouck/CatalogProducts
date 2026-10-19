@@ -38,31 +38,46 @@
     <!-- KPIs Synthétiques -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="kpi-card">
-                <div class="text-muted small fw-semibold text-uppercase">Total Références</div>
-                <div class="fs-3 fw-bold text-dark mt-1">{{ $totalCount }}</div>
-                <div class="text-muted small mt-1"><i class="bi bi-layers me-1"></i>Sur 5 univers</div>
-            </div>
+            <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm])) }}" 
+               class="text-decoration-none d-block h-100">
+                <div class="kpi-card {{ empty($stockStatus) ? 'border-primary shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase">Total Références</div>
+                    <div class="fs-3 fw-bold text-dark mt-1">{{ $totalCount }}</div>
+                    <div class="text-muted small mt-1"><i class="bi bi-layers me-1"></i>Toutes disponibilités</div>
+                </div>
+            </a>
         </div>
         <div class="col-6 col-md-3">
-            <div class="kpi-card">
-                <div class="text-muted small fw-semibold text-uppercase">En Stock</div>
-                <div class="fs-3 fw-bold text-success mt-1">{{ App\Models\Product::where('stock', '>', 0)->count() }}</div>
-                <div class="text-muted small mt-1"><i class="bi bi-check2-circle text-success me-1"></i>Prêts à l'expédition</div>
-            </div>
+            <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm, 'stock_status' => 'in_stock'])) }}" 
+               class="text-decoration-none d-block h-100">
+                <div class="kpi-card {{ $stockStatus === 'in_stock' ? 'border-success shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase">En Stock</div>
+                    <div class="fs-3 fw-bold text-success mt-1">{{ $inStockCount }}</div>
+                    <div class="text-muted small mt-1"><i class="bi bi-check2-circle text-success me-1"></i>Prêts à l'expédition</div>
+                </div>
+            </a>
         </div>
         <div class="col-6 col-md-3">
-            <div class="kpi-card">
-                <div class="text-muted small fw-semibold text-uppercase">Ruptures</div>
-                <div class="fs-3 fw-bold text-danger mt-1">{{ App\Models\Product::where('stock', '<=', 0)->count() }}</div>
-                <div class="text-muted small mt-1"><i class="bi bi-exclamation-circle text-danger me-1"></i>À réapprovisionner</div>
-            </div>
+            <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm, 'stock_status' => 'out_of_stock'])) }}" 
+               class="text-decoration-none d-block h-100">
+                <div class="kpi-card {{ $stockStatus === 'out_of_stock' ? 'border-danger shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase">Ruptures</div>
+                    <div class="fs-3 fw-bold text-danger mt-1">{{ $outOfStockCount }}</div>
+                    <div class="text-muted small mt-1"><i class="bi bi-exclamation-circle text-danger me-1"></i>À réapprovisionner</div>
+                </div>
+            </a>
         </div>
         <div class="col-6 col-md-3">
             <div class="kpi-card">
                 <div class="text-muted small fw-semibold text-uppercase">Filtre Actif</div>
-                <div class="fs-4 fw-bold text-dark mt-1 text-truncate">
-                    {{ $selectedCategory ? ucfirst($selectedCategory) : 'Tous les rayons' }}
+                <div class="fs-5 fw-bold text-dark mt-1 text-truncate">
+                    @if ($stockStatus === 'out_of_stock')
+                        <span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Ruptures</span>
+                    @elseif ($stockStatus === 'in_stock')
+                        <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>En stock</span>
+                    @else
+                        {{ $selectedCategory ? ucfirst($selectedCategory) : 'Tous les rayons' }}
+                    @endif
                 </div>
                 <div class="text-muted small mt-1">{{ $products->total() }} résultat{{ $products->total() > 1 ? 's' : '' }}</div>
             </div>
@@ -74,13 +89,13 @@
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
             <!-- Onglets Catégories -->
             <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('products.index', array_filter(['search' => $searchTerm])) }}" 
+                <a href="{{ route('products.index', array_filter(['search' => $searchTerm, 'stock_status' => $stockStatus])) }}" 
                    class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
                     Tous <span class="pill-count">{{ $totalCount }}</span>
                 </a>
                 @foreach ($categories as $category)
                     @php $count = $categoryCounts[$category->value]['count'] ?? 0; @endphp
-                    <a href="{{ route('products.index', array_filter(['category' => $category->value, 'search' => $searchTerm])) }}" 
+                    <a href="{{ route('products.index', array_filter(['category' => $category->value, 'search' => $searchTerm, 'stock_status' => $stockStatus])) }}" 
                        class="filter-pill {{ $selectedCategory === $category->value ? 'active' : '' }}">
                         <i class="bi {{ $category->icon() }}"></i> {{ $category->label() }}
                         <span class="pill-count">{{ $count }}</span>
@@ -93,6 +108,9 @@
                 @if ($selectedCategory)
                     <input type="hidden" name="category" value="{{ $selectedCategory }}">
                 @endif
+                @if ($stockStatus)
+                    <input type="hidden" name="stock_status" value="{{ $stockStatus }}">
+                @endif
                 <div class="input-group input-group-sm" style="min-width: 260px;">
                     <span class="input-group-text bg-light border-end-0 text-muted">
                         <i class="bi bi-search"></i>
@@ -101,8 +119,8 @@
                            placeholder="Rechercher par référence, marque..." value="{{ $searchTerm ?? '' }}">
                 </div>
                 <button type="submit" class="btn btn-sm btn-brand">Filtrer</button>
-                @if ($searchTerm || $selectedCategory)
-                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-secondary" title="Réinitialiser">
+                @if ($searchTerm || $selectedCategory || $stockStatus)
+                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-secondary" title="Réinitialiser tous les filtres">
                         <i class="bi bi-x-lg"></i>
                     </a>
                 @endif
