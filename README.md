@@ -1,66 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 CatalogProducts — Catalogue Produits NoSQL (Laravel & MongoDB)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Application web de gestion et vitrine de catalogue produits multi-catégories, construite avec **Laravel 13**, **PHP 8.5** et **MongoDB 7.0 (NoSQL)**.
 
-## About Laravel
+Ce projet démontre la modélisation et l'exploitation d'une base orientée documents (MongoDB) au sein de l'écosystème Laravel via le driver officiel `mongodb/laravel-mongodb`, avec gestion polymorphique des attributs produits (alimentaire, électronique, habillement, cosmétique, BTP).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Fonctionnalités Clés
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Architecture NoSQL Polymorphique** : Modélisation d'une collection unique `products` capable d'accueillir dynamiquement des attributs hétérogènes selon la catégorie (garantie, taille, unité, marque, contenance).
+- **Vitrine & CRUD Complet** : Consultation publique, pagination, filtrage dynamique par catégorie, recherche textuelle et interface d'administration protégée.
+- **Support Images & Fallback SVG** : Upload automatique avec redimensionnement/nettoyage et génération d'un badge vectoriel dynamique en cas d'absence de visuel.
+- **Double Environnement Docker** :
+  - **Option 1 (Full Stack)** : Application Laravel + MongoDB 7 + Mongo Express entièrement conteneurisés.
+  - **Option 2 (DB & Outils)** : MongoDB 7 + Mongo Express sous Docker, exécution rapide de Laravel sur la machine hôte.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Stack Technique
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+| Composant | Technologie | Version |
+| :--- | :--- | :--- |
+| **Framework** | Laravel | 13.x |
+| **Langage** | PHP (CLI & FPM) | 8.5+ |
+| **Base de données** | MongoDB Server | 7.0 |
+| **Driver NoSQL** | `mongodb/laravel-mongodb` (`ext-mongodb`) | 5.11+ / ext 2.5+ |
+| **Interface DB** | Mongo Express | Latest |
+| **Conteneurs** | Docker Compose | v2+ |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 👤 Identifiants & Comptes par Défaut
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Après exécution des migrations et des seeders (`php artisan db:seed`), les comptes suivants sont automatiquement injectés en base :
 
-### Premium Partners
+### 1. Application Web (Laravel)
+- **URL locale** : [http://localhost:8000](http://localhost:8000)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Rôle | Adresse E-mail | Mot de passe | Description |
+| :--- | :--- | :--- | :--- |
+| **Administrateur** | `admin@catalog.local` | `Password123!` | Accès complet aux ajouts, modifications et suppressions |
+| **Utilisateur Démo** | `demo@catalog.local` | `Password123!` | Compte de test standard |
 
-## Contributing
+### 2. Interface Mongo Express
+- **URL** : [http://localhost:8081](http://localhost:8081)
+- **Identifiant** : `admin`
+- **Mot de passe** : `P@ssword123`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🏁 Démarrage Rapide
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Option A : Exécution Locale avec MongoDB sous Docker (Recommandé en Dev)
 
-## Security Vulnerabilities
+1. **Cloner le projet et entrer dans le dossier** :
+   ```bash
+   git clone <repo-url> CatalogProducts
+   cd CatalogProducts
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2. **Installer les dépendances PHP et Node** :
+   ```bash
+   composer install
+   npm install
+   ```
 
-## License
+3. **Configurer l'environnement** :
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. **Démarrer MongoDB et Mongo Express** :
+   ```bash
+   docker compose -f docker-compose.db.yml up -d
+   ```
+
+5. **Exécuter les migrations et le jeu d'essai** :
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+6. **Lancer le serveur de développement** :
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+### Option B : Environnement 100% Docker
+
+1. **Démarrer l'ensemble des conteneurs** :
+   ```bash
+   docker compose up -d --build
+   ```
+
+2. **Exécuter les migrations et le seeder dans le conteneur** :
+   ```bash
+   docker compose exec app php artisan migrate --seed
+   ```
+
+---
+
+## 🧪 Tests Automatisés
+
+Pour exécuter la suite de tests avec PHPUnit :
+```bash
+php artisan test
+```
+
+---
+
+## 📁 Structure du Projet
+
+```text
+app/
+├── Enums/
+│   └── ProductCategory.php       # Définition des 5 catégories et de leurs attributs dynamiques
+├── Http/
+│   ├── Controllers/
+│   │   └── ProductController.php # Contrôleur RESTful unifié
+│   └── Requests/
+│       ├── StoreProductRequest.php
+│       └── UpdateProductRequest.php
+├── Models/
+│   ├── Product.php               # Modèle Eloquent MongoDB (scopes, attributs virtuels, fallback SVG)
+│   └── User.php                  # Modèle utilisateur authentifiable MongoDB
+└── Services/
+    └── ImageService.php          # Gestion sécurisée du stockage d'images
+
+database/
+├── migrations/                   # Schémas et index MongoDB (email_unique, libelle_unique, type_index)
+└── seeders/
+    ├── DatabaseSeeder.php
+    ├── UserSeeder.php            # Administrateur et compte démo
+    └── ProductSeeder.php         # Catalogue d'exemple réaliste par catégorie
+```
+
+---
+
+## 📄 Licence
+Ce projet est open-source et sous licence [MIT](LICENSE).

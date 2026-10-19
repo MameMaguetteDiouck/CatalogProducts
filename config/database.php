@@ -55,7 +55,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
@@ -75,7 +75,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
@@ -110,9 +110,9 @@ return [
         ],
 
         'mongodb' => [
-        'driver' => 'mongodb',
-        'dsn' => env('MONGODB_URI', 'mongodb://localhost:27017'),
-        'database' => env('MONGODB_DATABASE', 'laravel_app'),
+            'driver' => 'mongodb',
+            'dsn' => env('MONGODB_URI', 'mongodb://localhost:27017'),
+            'database' => env('MONGODB_DATABASE', 'catalog_db'),
         ],
 
     ],

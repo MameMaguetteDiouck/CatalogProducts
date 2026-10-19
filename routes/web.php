@@ -1,63 +1,42 @@
 <?php
 
-use App\Http\Controllers\AlimentController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\BtpController;
-use App\Http\Controllers\CosmetiqueController;
-use App\Http\Controllers\ElectroniqueController;
-use App\Http\Controllers\HabillementController;
-use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [ProduitController::class, 'home'])->name('home');
-Route::get('/products', [ProduitController::class, 'index'])->name('products.index')->middleware('auth');
-Route::get('/products/{type}', [ProduitController::class, 'seeMore'])->name('products.seeMore');
-Route::post('/products/search/{vue}', [ProduitController::class, 'search'])->name('products.search');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
-Route::controller(AlimentController::class)->prefix('/products/aliments')->middleware('auth')->group(function () {
-    Route::get('/edit/{id}', 'edit')->name('aliments.edit');
-    Route::get('/index',  'index')->name('aliments.index');
-    Route::get('/create', 'create')->name('aliments.create');
-    Route::post('/store', 'store')->name('aliments.store');
-    Route::put('/update/{id}', 'update')->name('aliments.update');
-    Route::delete('/destroy/{id}', 'destroy')->name('aliments.destroy');
+// Vitrine publique
+Route::get('/', [ProductController::class, 'home'])->name('home');
+
+// Espace de gestion (strictement réservé aux utilisateurs authentifiés)
+Route::middleware('auth')->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Administration des utilisateurs et attribution des rôles
+    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
+
+    // Gestion du profil personnel
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Changement obligatoire de mot de passe lors du premier accès / après reset
+    Route::get('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'showChangeForm'])->name('password.first_login');
+    Route::post('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'updatePassword'])->name('password.first_login.update');
 });
 
-Route::controller(ElectroniqueController::class)->prefix('/products/electroniques/')->middleware('auth')->group(function(){
-    Route::get('/index', 'index')->name('electroniques.index');
-    Route::get('/edit/{id}', 'edit')->name('electroniques.edit');
-    Route::get('/create', 'create')->name('electroniques.create');
-    Route::post('/store', 'store')->name('electroniques.store');
-    Route::put('/update/{id}', 'update')->name('electroniques.update');
-    Route::delete('/destroy/{id}', 'destroy')->name('electroniques.destroy');
-});
-Route::controller(HabillementController::class)->prefix('/products/habillements/')->middleware('auth')->group(function(){
-    Route::get('/index', action: 'index')->name('habillements.index');
-    Route::get('/edit/{id}', 'edit')->name('habillements.edit');
-    Route::get('/create', 'create')->name('habillements.create');
-    Route::post('/store', 'store')->name('habillements.store');
-    Route::put('/update/{id}', 'update')->name('habillements.update');
-    Route::delete('/destroy/{id}', 'destroy')->name('habillements.destroy');
-});
-Route::controller(BtpController::class)->prefix('/products/btps/')->middleware('auth')->group(function(){
-    Route::get('/index', 'index')->name('btps.index');
-    Route::get('/edit/{id}', 'edit')->name('btps.edit');
-    Route::get('/create/', 'create')->name('btps.create');
-    Route::post('/store', 'store')->name('btps.store');
-    Route::put('/update/{id}', 'update')->name('btps.update');
-    Route::delete('/destroy/{id}', 'destroy')->name('btps.destroy');
-});
-Route::controller(CosmetiqueController::class)->prefix('/products/cosmetiques/')->middleware('auth')->group(function(){
-    Route::get('/index', 'index')->name('cosmetiques.index');
-    Route::get('/edit/{id}', 'edit')->name('cosmetiques.edit');
-    Route::get('/create/', 'create')->name('cosmetiques.create');
-    Route::post('/store', 'store')->name('cosmetiques.store');
-    Route::put('/update/{id}', 'update')->name('cosmetiques.update');
-    Route::delete('/destroy/{id}', 'destroy')->name('cosmetiques.destroy');
-});
+// Consultation publique de la fiche détail d'un produit (enregistré après /products/create)
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-
-Auth::routes();
-
-// Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Authentification (Connexion, Déconnexion sans inscription ni reset email/SMTP)
+Auth::routes(['register' => false, 'reset' => false]);
