@@ -192,6 +192,23 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
     border: 1px solid var(--cat-btps-border);
 }
 
+/* Horizontal Category Scroll for Mobile Responsiveness */
+.category-scroll-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 4px;
+    padding-top: 2px;
+}
+
+.category-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
 /* Category Filter Pills */
 .filter-pill {
     padding: 0.5rem 1rem;

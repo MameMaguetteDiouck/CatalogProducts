@@ -35,81 +35,61 @@
         </div>
     </div>
 
-    <!-- KPIs Synthétiques -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
+    <!-- KPIs Synthétiques (3 indicateurs clairs, équilibrés et responsives) -->
+    <div class="row g-2 g-md-3 mb-4">
+        <div class="col-4">
             <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm, 'per_page' => $perPage])) }}" 
                class="text-decoration-none d-block h-100">
-                <div class="kpi-card {{ empty($stockStatus) ? 'border-primary shadow-sm' : '' }}">
-                    <div class="text-muted small fw-semibold text-uppercase">Total Références</div>
-                    <div class="fs-3 fw-bold text-dark mt-1">{{ $contextTotalCount }}</div>
-                    <div class="text-muted small mt-1">
+                <div class="kpi-card p-2 p-md-3 {{ empty($stockStatus) ? 'border-primary shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase text-truncate" style="font-size: 0.725rem; letter-spacing: 0.5px;">
+                        Références
+                    </div>
+                    <div class="fs-4 fs-md-3 fw-bold text-dark mt-1">{{ $contextTotalCount }}</div>
+                    <div class="text-muted small mt-1 d-none d-sm-block text-truncate" style="font-size: 0.75rem;">
                         @if ($selectedCategory || $searchTerm)
-                            <i class="bi bi-funnel text-primary me-1"></i>Dans ce filtre ({{ $globalTotalCount }} au total)
+                            <i class="bi bi-funnel text-primary me-1"></i>Dans ce filtre
                         @else
-                            <i class="bi bi-layers me-1"></i>Catalogue complet (5 univers)
+                            <i class="bi bi-layers me-1"></i>Catalogue complet
                         @endif
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-4">
             <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm, 'stock_status' => 'in_stock', 'per_page' => $perPage])) }}" 
                class="text-decoration-none d-block h-100">
-                <div class="kpi-card {{ $stockStatus === 'in_stock' ? 'border-success shadow-sm' : '' }}">
-                    <div class="text-muted small fw-semibold text-uppercase">En Stock</div>
-                    <div class="fs-3 fw-bold text-success mt-1">{{ $contextInStockCount }}</div>
-                    <div class="text-muted small mt-1">
-                        @if ($selectedCategory || $searchTerm)
-                            <i class="bi bi-check2-circle text-success me-1"></i>Disponibles dans ce filtre
-                        @else
-                            <i class="bi bi-check2-circle text-success me-1"></i>Prêts à l'expédition ({{ $globalInStockCount }})
-                        @endif
+                <div class="kpi-card p-2 p-md-3 {{ $stockStatus === 'in_stock' ? 'border-success shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase text-truncate" style="font-size: 0.725rem; letter-spacing: 0.5px;">
+                        En Stock
+                    </div>
+                    <div class="fs-4 fs-md-3 fw-bold text-success mt-1">{{ $contextInStockCount }}</div>
+                    <div class="text-muted small mt-1 d-none d-sm-block text-truncate" style="font-size: 0.75rem;">
+                        <i class="bi bi-check2-circle text-success me-1"></i>Disponibles
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-4">
             <a href="{{ route('products.index', array_filter(['category' => $selectedCategory, 'search' => $searchTerm, 'stock_status' => 'out_of_stock', 'per_page' => $perPage])) }}" 
                class="text-decoration-none d-block h-100">
-                <div class="kpi-card {{ $stockStatus === 'out_of_stock' ? 'border-danger shadow-sm' : '' }}">
-                    <div class="text-muted small fw-semibold text-uppercase">Ruptures</div>
-                    <div class="fs-3 fw-bold text-danger mt-1">{{ $contextOutOfStockCount }}</div>
-                    <div class="text-muted small mt-1">
-                        @if ($selectedCategory || $searchTerm)
-                            <i class="bi bi-exclamation-circle text-danger me-1"></i>Ruptures dans ce filtre
-                        @else
-                            <i class="bi bi-exclamation-circle text-danger me-1"></i>À réapprovisionner ({{ $globalOutOfStockCount }})
-                        @endif
+                <div class="kpi-card p-2 p-md-3 {{ $stockStatus === 'out_of_stock' ? 'border-danger shadow-sm' : '' }}">
+                    <div class="text-muted small fw-semibold text-uppercase text-truncate" style="font-size: 0.725rem; letter-spacing: 0.5px;">
+                        Ruptures
+                    </div>
+                    <div class="fs-4 fs-md-3 fw-bold text-danger mt-1">{{ $contextOutOfStockCount }}</div>
+                    <div class="text-muted small mt-1 d-none d-sm-block text-truncate" style="font-size: 0.75rem;">
+                        <i class="bi bi-exclamation-circle text-danger me-1"></i>À réapprovisionner
                     </div>
                 </div>
             </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="kpi-card">
-                <div class="text-muted small fw-semibold text-uppercase">Affichage</div>
-                <div class="fs-3 fw-bold text-dark mt-1">
-                    {{ $products->count() }} <span class="fs-6 text-muted fw-normal">/ {{ $products->total() }}</span>
-                </div>
-                <div class="text-muted small mt-1 text-truncate">
-                    Page {{ $products->currentPage() }} sur {{ max($products->lastPage(), 1) }}
-                    @if ($stockStatus === 'out_of_stock')
-                        &bull; <span class="text-danger fw-semibold">Ruptures</span>
-                    @elseif ($stockStatus === 'in_stock')
-                        &bull; <span class="text-success fw-semibold">En stock</span>
-                    @elseif ($selectedCategory)
-                        &bull; {{ ucfirst($selectedCategory) }}
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Barre d'actions & Filtres -->
-    <div class="card border rounded-3 p-3 shadow-sm bg-white mb-4">
+    <!-- Barre d'actions & Filtres (Défilement horizontal fluide sur mobile) -->
+    <div class="card border rounded-3 p-2 p-md-3 shadow-sm bg-white mb-4">
         <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-            <!-- Onglets Catégories -->
-            <div class="d-flex flex-wrap gap-2">
+            <!-- Onglets Catégories avec scroll tactile sur mobile -->
+            <div class="category-scroll-wrapper">
                 <a href="{{ route('products.index', array_filter(['search' => $searchTerm, 'stock_status' => $stockStatus, 'per_page' => $perPage])) }}" 
                    class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
                     Tous <span class="pill-count">{{ $globalTotalCount }}</span>
@@ -124,8 +104,8 @@
                 @endforeach
             </div>
 
-            <!-- Recherche -->
-            <form action="{{ route('products.index') }}" method="GET" class="d-flex gap-2">
+            <!-- Recherche & Réinitialisation -->
+            <form action="{{ route('products.index') }}" method="GET" class="d-flex gap-2 w-100 w-lg-auto">
                 @if ($selectedCategory)
                     <input type="hidden" name="category" value="{{ $selectedCategory }}">
                 @endif
@@ -135,14 +115,14 @@
                 @if ($perPage !== 12)
                     <input type="hidden" name="per_page" value="{{ $perPage }}">
                 @endif
-                <div class="input-group input-group-sm" style="min-width: 260px;">
+                <div class="input-group input-group-sm flex-grow-1" style="min-width: 200px;">
                     <span class="input-group-text bg-light border-end-0 text-muted">
                         <i class="bi bi-search"></i>
                     </span>
                     <input type="search" name="search" class="form-control bg-light border-start-0" 
-                           placeholder="Rechercher par référence, marque..." value="{{ $searchTerm ?? '' }}">
+                           placeholder="Rechercher référence, marque..." value="{{ $searchTerm ?? '' }}">
                 </div>
-                <button type="submit" class="btn btn-sm btn-brand">Filtrer</button>
+                <button type="submit" class="btn btn-sm btn-brand text-nowrap">Filtrer</button>
                 @if ($searchTerm || $selectedCategory || $stockStatus)
                     <a href="{{ route('products.index', array_filter(['per_page' => $perPage !== 12 ? $perPage : null])) }}" 
                        class="btn btn-sm btn-outline-secondary" title="Réinitialiser tous les filtres">
@@ -155,16 +135,22 @@
 
     <!-- Grille des Produits -->
     @if ($products->count() > 0)
-        <!-- En-tête des résultats & Contrôles de pagination -->
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-2">
+        <!-- En-tête des résultats & Contrôles de volume -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="text-muted small">
-                Affichage de <strong class="text-dark">{{ $products->firstItem() ?? 0 }}</strong> à <strong class="text-dark">{{ $products->lastItem() ?? 0 }}</strong> sur <strong class="text-dark">{{ $products->total() }}</strong> référence{{ $products->total() > 1 ? 's' : '' }}
-                @if ($products->lastPage() > 1)
-                    &bull; Page <strong class="text-dark">{{ $products->currentPage() }}</strong> sur <strong class="text-dark">{{ $products->lastPage() }}</strong>
+                <strong class="text-dark">{{ $products->total() }}</strong> référence{{ $products->total() > 1 ? 's' : '' }}
+                @if ($selectedCategory)
+                    &bull; <span class="text-dark fw-semibold">{{ ucfirst($selectedCategory) }}</span>
+                @endif
+                @if ($stockStatus === 'out_of_stock')
+                    &bull; <span class="badge bg-danger-subtle text-danger fw-semibold">Ruptures</span>
+                @elseif ($stockStatus === 'in_stock')
+                    &bull; <span class="badge bg-success-subtle text-success fw-semibold">En stock</span>
                 @endif
             </div>
+
             <div class="per-page-segmented d-inline-flex align-items-center">
-                <span class="text-muted small px-2 fw-semibold text-nowrap"><i class="bi bi-ui-checks-grid me-1"></i>Par page :</span>
+                <span class="text-muted small px-2 fw-semibold d-none d-sm-inline text-nowrap"><i class="bi bi-ui-checks-grid me-1"></i>Par page :</span>
                 @foreach ([8, 12, 24, 48] as $size)
                     <a href="{{ request()->fullUrlWithQuery(['per_page' => $size, 'page' => 1]) }}" 
                        class="per-page-option {{ $perPage == $size ? 'active' : '' }}"
@@ -250,11 +236,11 @@
 
         <!-- Pagination -->
         @if ($products->hasPages())
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-5 pt-3 border-top">
-                <div class="text-muted small">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top">
+                <div class="text-muted small d-none d-md-block">
                     Affichage de <strong class="text-dark">{{ $products->firstItem() ?? 0 }}</strong> à <strong class="text-dark">{{ $products->lastItem() ?? 0 }}</strong> sur <strong class="text-dark">{{ $products->total() }}</strong> références &bull; Page <strong class="text-dark">{{ $products->currentPage() }}</strong> sur <strong class="text-dark">{{ $products->lastPage() }}</strong>
                 </div>
-                <div>
+                <div class="w-100 w-md-auto">
                     {{ $products->links('vendor.pagination.modern') }}
                 </div>
             </div>
