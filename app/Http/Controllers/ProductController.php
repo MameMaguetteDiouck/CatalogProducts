@@ -59,6 +59,10 @@ class ProductController extends Controller
         $selectedCategory = $request->query('category') ?? $request->query('type');
         $searchTerm = $request->query('search') ?? $request->query('q');
         $stockStatus = $request->query('stock_status');
+        $perPage = (int) $request->query('per_page', 12);
+        if (!in_array($perPage, [12, 24, 48], true)) {
+            $perPage = 12;
+        }
 
         $query = Product::query();
 
@@ -76,9 +80,26 @@ class ProductController extends Controller
             $query->outOfStock();
         }
 
-        $products = $query->orderBy('_id', 'desc')->paginate(12)->withQueryString();
+        $products = $query->orderBy('_id', 'desc')->paginate($perPage)->withQueryString();
 
-        // Statistiques globales par catégorie pour le tableau de bord
+        // Statistiques globales du catalogue (totales, indépendantes du filtre)
+        $globalTotalCount = Product::count();
+        $globalInStockCount = Product::inStock()->count();
+        $globalOutOfStockCount = Product::outOfStock()->count();
+
+        // Statistiques contextuelles (adaptées au rayon ou recherche active)
+        $contextQuery = Product::query();
+        if ($selectedCategory) {
+            $contextQuery->ofType($selectedCategory);
+        }
+        if ($searchTerm) {
+            $contextQuery->search($searchTerm);
+        }
+        $contextTotalCount = (clone $contextQuery)->count();
+        $contextInStockCount = (clone $contextQuery)->inStock()->count();
+        $contextOutOfStockCount = (clone $contextQuery)->outOfStock()->count();
+
+        // Statistiques globales par catégorie pour les onglets
         $categoryCounts = [];
         foreach (ProductCategory::cases() as $category) {
             $categoryCounts[$category->value] = [
@@ -88,9 +109,6 @@ class ProductController extends Controller
             ];
         }
 
-        $totalCount = Product::count();
-        $inStockCount = Product::inStock()->count();
-        $outOfStockCount = Product::outOfStock()->count();
         $categories = ProductCategory::cases();
 
         return view('products.index', compact(
@@ -99,11 +117,19 @@ class ProductController extends Controller
             'selectedCategory',
             'searchTerm',
             'stockStatus',
+            'perPage',
             'categoryCounts',
-            'totalCount',
-            'inStockCount',
-            'outOfStockCount'
-        ));
+            'globalTotalCount',
+            'globalInStockCount',
+            'globalOutOfStockCount',
+            'contextTotalCount',
+            'contextInStockCount',
+            'contextOutOfStockCount'
+        ))->with([
+            'totalCount' => $globalTotalCount,
+            'inStockCount' => $globalInStockCount,
+            'outOfStockCount' => $globalOutOfStockCount,
+        ]);
     }
 
     /**

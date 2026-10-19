@@ -209,4 +209,17 @@ class CatalogTest extends TestCase
 
         $product->delete();
     }
+
+    public function test_management_space_supports_custom_per_page_pagination(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $response = $this->actingAs($user)->get(route('products.index', ['per_page' => 24]));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('perPage', 24);
+        $response->assertSee('Afficher par page');
+        $response->assertSee('Catalogue complet');
+    }
 }
