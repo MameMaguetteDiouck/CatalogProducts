@@ -59,9 +59,22 @@ class ProductController extends Controller
         $selectedCategory = $request->query('category') ?? $request->query('type');
         $searchTerm = $request->query('search') ?? $request->query('q');
         $stockStatus = $request->query('stock_status');
-        $perPage = (int) $request->query('per_page', 12);
-        if (!in_array($perPage, [12, 24, 48], true)) {
-            $perPage = 12;
+
+        $configuredDefault = (int) env('CATALOG_PER_PAGE', 12);
+        if (!in_array($configuredDefault, [8, 12, 24, 48], true)) {
+            $configuredDefault = 12;
+        }
+
+        if ($request->has('per_page')) {
+            $candidate = (int) $request->query('per_page');
+            if (in_array($candidate, [8, 12, 24, 48], true)) {
+                session(['catalog_per_page' => $candidate]);
+            }
+        }
+
+        $perPage = (int) session('catalog_per_page', $configuredDefault);
+        if (!in_array($perPage, [8, 12, 24, 48], true)) {
+            $perPage = $configuredDefault;
         }
 
         $query = Product::query();

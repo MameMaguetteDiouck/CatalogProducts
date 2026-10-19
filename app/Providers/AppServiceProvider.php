@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::defaultView('vendor.pagination.modern');
         Paginator::useBootstrapFive();
         // Seuls les administrateurs peuvent gérer l'équipe d'utilisateurs
         Gate::define('manage-users', function (User $user) {

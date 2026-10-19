@@ -163,16 +163,15 @@
                     &bull; Page <strong class="text-dark">{{ $products->currentPage() }}</strong> sur <strong class="text-dark">{{ $products->lastPage() }}</strong>
                 @endif
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small text-nowrap">Afficher par page :</span>
-                <div class="btn-group btn-group-sm">
-                    @foreach ([12, 24, 48] as $size)
-                        <a href="{{ request()->fullUrlWithQuery(['per_page' => $size, 'page' => 1]) }}" 
-                           class="btn btn-sm {{ $perPage == $size ? 'btn-brand' : 'btn-outline-secondary' }}">
-                            {{ $size }}
-                        </a>
-                    @endforeach
-                </div>
+            <div class="per-page-segmented d-inline-flex align-items-center">
+                <span class="text-muted small px-2 fw-semibold text-nowrap"><i class="bi bi-ui-checks-grid me-1"></i>Par page :</span>
+                @foreach ([8, 12, 24, 48] as $size)
+                    <a href="{{ request()->fullUrlWithQuery(['per_page' => $size, 'page' => 1]) }}" 
+                       class="per-page-option {{ $perPage == $size ? 'active' : '' }}"
+                       title="Afficher {{ $size }} références par page">
+                        {{ $size }}
+                    </a>
+                @endforeach
             </div>
         </div>
 
@@ -251,12 +250,12 @@
 
         <!-- Pagination -->
         @if ($products->hasPages())
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mt-5 pt-3 border-top">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-5 pt-3 border-top">
                 <div class="text-muted small">
-                    Page {{ $products->currentPage() }} sur {{ $products->lastPage() }} ({{ $products->total() }} références)
+                    Affichage de <strong class="text-dark">{{ $products->firstItem() ?? 0 }}</strong> à <strong class="text-dark">{{ $products->lastItem() ?? 0 }}</strong> sur <strong class="text-dark">{{ $products->total() }}</strong> références &bull; Page <strong class="text-dark">{{ $products->currentPage() }}</strong> sur <strong class="text-dark">{{ $products->lastPage() }}</strong>
                 </div>
                 <div>
-                    {{ $products->links() }}
+                    {{ $products->links('vendor.pagination.modern') }}
                 </div>
             </div>
         @endif

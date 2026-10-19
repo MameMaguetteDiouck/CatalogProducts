@@ -219,7 +219,9 @@ class CatalogTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewHas('perPage', 24);
-        $response->assertSee('Afficher par page');
+        $response->assertSessionHas('catalog_per_page', 24);
+        $response->assertSee('per-page-segmented');
+        $response->assertSee('modern-pagination');
         $response->assertSee('Catalogue complet');
     }
 }
