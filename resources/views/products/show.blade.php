@@ -76,8 +76,8 @@
                                     @endif
                                     @if ($product->unite)
                                         <div class="col-6">
-                                            <span class="text-muted d-block">Unité :</span>
-                                            <strong class="text-dark">{{ $product->quantite ? $product->quantite . ' ' : '' }}{{ $product->unite }}</strong>
+                                            <span class="text-muted d-block">Unité / Conditionnement :</span>
+                                            <strong class="text-dark">{{ $product->unite }}</strong>
                                         </div>
                                     @endif
                                     @if ($product->categorie)

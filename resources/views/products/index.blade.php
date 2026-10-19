@@ -209,19 +209,19 @@
                                 <div class="fs-5 fw-bold text-dark text-nowrap">
                                     {{ $product->formattedPrice() }}
                                 </div>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-secondary" title="Consulter">
+                                <div class="card-actions-wrapper">
+                                    <a href="{{ route('products.show', $product->id) }}" class="btn-card-action action-view" title="Consulter la fiche" aria-label="Consulter">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-outline-primary" title="Modifier">
+                                    <a href="{{ route('products.edit', $product->id) }}" class="btn-card-action action-edit" title="Modifier la référence" aria-label="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     @can('delete-product')
                                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" 
-                                              onsubmit="return confirm('Confirmez-vous la suppression de ce produit ?');" class="d-inline">
+                                              onsubmit="return confirm('Confirmez-vous la suppression de ce produit ?');" class="d-inline m-0 p-0">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                            <button type="submit" class="btn-card-action action-delete" title="Supprimer la référence" aria-label="Supprimer">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

@@ -400,3 +400,50 @@ h1, h2, h3, h4, h5, h6, .fw-bold {
     color: var(--slate-text-muted);
     font-size: 0.875rem;
 }
+
+/* Product Card Action Buttons (Soft, Independent & Responsive) */
+.card-actions-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--slate-text-muted);
+    background-color: #f8fafc;
+    border: 1px solid var(--slate-border);
+    transition: all 0.15s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-card-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.08);
+}
+
+.btn-card-action.action-view:hover {
+    background-color: #ffffff;
+    color: var(--slate-text-headings);
+    border-color: #94a3b8;
+}
+
+.btn-card-action.action-edit:hover {
+    background-color: var(--brand-primary-light);
+    color: var(--brand-primary);
+    border-color: var(--brand-primary-border);
+}
+
+.btn-card-action.action-delete:hover {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border-color: #fecaca;
+}
