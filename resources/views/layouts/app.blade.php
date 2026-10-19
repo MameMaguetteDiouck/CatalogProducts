@@ -88,6 +88,7 @@
                             @can('manage-users')
                                 <li><a class="dropdown-item py-2" href="{{ route('users.index') }}"><i class="bi bi-people me-2"></i>Équipe & Rôles</a></li>
                             @endcan
+                            <li><a class="dropdown-item py-2" href="{{ route('profile.edit') }}"><i class="bi bi-person-gear me-2"></i>Mon Profil</a></li>
                             <li><a class="dropdown-item py-2" href="{{ route('home') }}"><i class="bi bi-shop me-2"></i>Voir la vitrine</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>

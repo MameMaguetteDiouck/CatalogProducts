@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('Password123!'),
                 'role' => UserRole::ADMIN,
                 'email_verified_at' => now(),
+                'must_change_password' => false,
             ]
         );
 
@@ -33,6 +34,19 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('Password123!'),
                 'role' => UserRole::MANAGER,
                 'email_verified_at' => now(),
+                'must_change_password' => false,
+            ]
+        );
+
+        // 3. Nouveau collaborateur en attente de définition de son mot de passe
+        User::updateOrCreate(
+            ['email' => 'nouveau@catalog.local'],
+            [
+                'name' => 'Aïssatou Ba',
+                'password' => Hash::make('Password123!'),
+                'role' => UserRole::MANAGER,
+                'email_verified_at' => now(),
+                'must_change_password' => true,
             ]
         );
     }

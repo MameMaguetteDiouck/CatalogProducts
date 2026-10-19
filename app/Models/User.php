@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'must_change_password',
     ];
 
     /**
@@ -41,6 +42,7 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'role' => UserRole::MANAGER->value,
+        'must_change_password' => false,
     ];
 
     /**
@@ -54,6 +56,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'must_change_password' => 'boolean',
         ];
     }
 
@@ -79,5 +82,13 @@ class User extends Authenticatable
     public function roleLabel(): string
     {
         return $this->role instanceof UserRole ? $this->role->label() : 'Gestionnaire';
+    }
+
+    /**
+     * Check if user must change their temporary password.
+     */
+    public function mustChangePassword(): bool
+    {
+        return (bool) $this->must_change_password;
     }
 }

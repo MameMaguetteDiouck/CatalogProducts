@@ -27,7 +27,16 @@ Route::middleware('auth')->group(function () {
 
     // Administration des utilisateurs et attribution des rôles
     Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
+
+    // Gestion du profil personnel
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Changement obligatoire de mot de passe lors du premier accès / après reset
+    Route::get('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'showChangeForm'])->name('password.first_login');
+    Route::post('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'updatePassword'])->name('password.first_login.update');
 });
 
-// Authentification (Connexion, Déconnexion)
-Auth::routes(['register' => false]);
+// Authentification (Connexion, Déconnexion sans inscription ni reset email/SMTP)
+Auth::routes(['register' => false, 'reset' => false]);

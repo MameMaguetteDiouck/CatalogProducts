@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="bg-light min-vh-100 d-flex align-items-center justify-content-center">
+<body class="bg-light min-vh-100 d-flex flex-column justify-content-center p-0 m-0">
     @yield('content')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
