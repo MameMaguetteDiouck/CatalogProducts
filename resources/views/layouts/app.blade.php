@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'CatalogPro') }} — Gestion du Catalogue</title>
+    <title>{{ config('app.name', 'CatalogPro') }}</title>
 
     <!-- Polices & Scripts -->
     @vite(['resources/sass/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
@@ -16,7 +16,7 @@
     <header class="catalog-navbar sticky-top py-2">
         <div class="container-fluid px-lg-5 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-4">
-                <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="{{ route('products.index') }}">
+                <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="{{ route('home') }}">
                     <span class="d-inline-flex align-items-center justify-content-center text-white rounded-3 shadow-sm" 
                           style="width: 36px; height: 36px; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);">
                         <i class="bi bi-box-seam"></i>
@@ -24,20 +24,23 @@
                     <span class="fs-5 fw-bold text-dark">Catalog<span style="color: #4f46e5;">Pro</span></span>
                 </a>
 
-                <nav class="d-none d-md-flex align-items-center gap-1">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                        <i class="bi bi-shop me-1"></i> Vitrine
-                    </a>
-                    <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                        <i class="bi bi-grid me-1"></i> Catalogue Produits
-                    </a>
-                    <a href="{{ route('products.create') }}" class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}">
-                        <i class="bi bi-plus-circle me-1"></i> Nouveau Produit
-                    </a>
-                </nav>
+                <!-- Menu de navigation : visible UNIQUEMENT si l'utilisateur est connecté -->
+                @auth
+                    <nav class="d-none d-md-flex align-items-center gap-1">
+                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                            <i class="bi bi-shop me-1"></i> Vitrine
+                        </a>
+                        <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
+                            <i class="bi bi-grid me-1"></i> Espace Gestion
+                        </a>
+                        <a href="{{ route('products.create') }}" class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}">
+                            <i class="bi bi-plus-circle me-1"></i> Nouveau Produit
+                        </a>
+                    </nav>
+                @endauth
             </div>
 
-            <!-- Espace Utilisateur -->
+            <!-- Espace Utilisateur & Connexion -->
             <div class="d-flex align-items-center gap-2">
                 @guest
                     <a href="{{ route('login') }}" class="btn btn-brand btn-sm">
@@ -56,7 +59,7 @@
                             <li class="px-3 py-1 text-muted small border-bottom">
                                 Connecté en tant que<br><strong>{{ Auth::user()->email }}</strong>
                             </li>
-                            <li><a class="dropdown-item py-2" href="{{ route('products.index') }}"><i class="bi bi-grid me-2"></i>Gestion des produits</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('products.index') }}"><i class="bi bi-grid me-2"></i>Espace Gestion</a></li>
                             <li><a class="dropdown-item py-2" href="{{ route('home') }}"><i class="bi bi-shop me-2"></i>Voir la vitrine</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
@@ -85,8 +88,14 @@
             <div>
                 <span class="fw-semibold text-dark">CatalogPro</span> &copy; {{ date('Y') }} — Plateforme Centrale de Produits.
             </div>
-            <div class="text-muted">
-                Statut système : <span class="badge bg-success-subtle text-success">Opérationnel</span>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('home') }}" class="text-muted text-decoration-none">Vitrine</a>
+                @auth
+                    <a href="{{ route('products.index') }}" class="text-muted text-decoration-none">Espace Gestion</a>
+                @endauth
+                @guest
+                    <a href="{{ route('login') }}" class="text-muted text-decoration-none">Connexion</a>
+                @endguest
             </div>
         </div>
     </footer>

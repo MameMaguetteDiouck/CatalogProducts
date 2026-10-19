@@ -14,18 +14,29 @@ use Illuminate\View\View;
 class ProductController extends Controller
 {
     /**
-     * Display the public showcase / home catalog.
+     * Display the public showcase / home catalog with optional search and category filters.
      */
-    public function home(): View
+    public function home(Request $request): View
     {
+        $searchTerm = $request->query('search');
+        $selectedCategory = $request->query('category');
         $categories = ProductCategory::cases();
         $productsByCategory = [];
 
         foreach ($categories as $cat) {
-            $productsByCategory[$cat->value] = Product::ofType($cat->value)->limit(8)->get();
+            if ($selectedCategory && $selectedCategory !== $cat->value) {
+                continue;
+            }
+
+            $query = Product::ofType($cat->value);
+            if ($searchTerm) {
+                $query->search($searchTerm);
+            }
+
+            $productsByCategory[$cat->value] = $query->limit(12)->get();
         }
 
-        return view('welcome', compact('categories', 'productsByCategory'));
+        return view('welcome', compact('categories', 'productsByCategory', 'searchTerm', 'selectedCategory'));
     }
 
     /**

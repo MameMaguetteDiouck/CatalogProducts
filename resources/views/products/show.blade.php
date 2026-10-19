@@ -6,7 +6,9 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb small">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none">Vitrine</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('products.index') }}" class="text-decoration-none">Catalogue</a></li>
+            @auth
+                <li class="breadcrumb-item"><a href="{{ route('products.index') }}" class="text-decoration-none">Espace Gestion</a></li>
+            @endauth
             <li class="breadcrumb-item active" aria-current="page">{{ $product->libelle }}</li>
         </ol>
     </nav>
@@ -21,7 +23,7 @@
                              class="img-fluid rounded-3" style="max-height: 320px; object-fit: contain;">
                     </div>
 
-                    <!-- Fiche Technique & Actions -->
+                    <!-- Fiche Technique Détaillée -->
                     <div class="col-md-7">
                         <div class="card-body p-4 p-lg-5 d-flex flex-column h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -51,7 +53,7 @@
                             <!-- Spécifications Techniques -->
                             <div class="rounded-3 p-3 mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                 <h6 class="fw-bold text-dark mb-3 small text-uppercase" style="letter-spacing: 0.5px;">
-                                    Spécifications de la Référence
+                                    Caractéristiques Techniques
                                 </h6>
                                 <div class="row g-2 small">
                                     @if ($product->marque)
@@ -74,7 +76,7 @@
                                     @endif
                                     @if ($product->unite)
                                         <div class="col-6">
-                                            <span class="text-muted d-block">Unité de vente :</span>
+                                            <span class="text-muted d-block">Unité :</span>
                                             <strong class="text-dark">{{ $product->quantite ? $product->quantite . ' ' : '' }}{{ $product->unite }}</strong>
                                         </div>
                                     @endif
@@ -87,22 +89,16 @@
                                 </div>
                             </div>
 
-                            <!-- Actions -->
+                            <!-- Actions de navigation (pure consultation de détails) -->
                             <div class="mt-auto pt-3 border-top d-flex align-items-center gap-2">
-                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-brand btn-sm">
-                                    <i class="bi bi-pencil me-1"></i> Modifier la fiche
+                                <a href="{{ route('home') }}" class="btn btn-brand btn-sm">
+                                    <i class="bi bi-arrow-left me-1"></i> Retour à la vitrine
                                 </a>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" 
-                                      onsubmit="return confirm('Confirmez-vous la suppression définitive ?');" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-trash me-1"></i> Supprimer
-                                    </button>
-                                </form>
-                                <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm ms-auto">
-                                    <i class="bi bi-arrow-left me-1"></i> Retour catalogue
-                                </a>
+                                @auth
+                                    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-grid me-1"></i> Retour à l'espace gestion
+                                    </a>
+                                @endauth
                             </div>
                         </div>
                     </div>
