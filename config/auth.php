@@ -112,4 +112,16 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default Administrator Credentials (Seeding)
+    |--------------------------------------------------------------------------
+    */
+
+    'admin' => [
+        'name' => env('DEFAULT_ADMIN_NAME', 'Directeur Général'),
+        'email' => env('DEFAULT_ADMIN_EMAIL', 'admin@catalog.local'),
+        'password' => env('DEFAULT_ADMIN_PASSWORD', 'Password123!'),
+    ],
+
 ];

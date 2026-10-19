@@ -15,11 +15,15 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 1. Administrateur principal (accès total + gestion des utilisateurs)
+        $adminEmail = config('auth.admin.email', 'admin@catalog.local');
+        $adminPassword = config('auth.admin.password', 'Password123!');
+        $adminName = config('auth.admin.name', 'Directeur Général');
+
         User::updateOrCreate(
-            ['email' => 'admin@catalog.local'],
+            ['email' => $adminEmail],
             [
-                'name' => 'Directeur Général',
-                'password' => Hash::make('Password123!'),
+                'name' => $adminName,
+                'password' => Hash::make($adminPassword),
                 'role' => UserRole::ADMIN,
                 'email_verified_at' => now(),
                 'must_change_password' => false,
