@@ -51,25 +51,27 @@
 
     <!-- Contenu Principal Vitrine -->
     <div class="container py-5 flex-grow-1" id="catalogue">
-        <!-- Filtres rapides par Univers -->
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-4 pb-2">
-            <a href="{{ route('home') }}" class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
-                Tous <span class="pill-count">{{ App\Models\Product::count() }}</span>
-            </a>
-            @foreach ($categories as $cat)
-                @php 
-                    $catCount = App\Models\Product::countForType($cat->value);
-                @endphp
-                <a href="{{ route('home', array_filter(['category' => $cat->value, 'search' => $searchTerm])) }}" 
-                   class="filter-pill {{ $selectedCategory === $cat->value ? 'active' : '' }}">
-                    <i class="bi {{ $cat->icon() }}"></i> {{ $cat->label() }}
-                    <span class="pill-count">{{ $catCount }}</span>
+        <!-- Filtres rapides par Univers (Défilement fluide mobile & boutons propres) -->
+        <div class="d-flex align-items-center justify-content-between gap-2 mb-4 pb-2">
+            <div class="category-scroll-wrapper flex-grow-1">
+                <a href="{{ route('home') }}" class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
+                    Tous <span class="pill-count">{{ App\Models\Product::count() }}</span>
                 </a>
-            @endforeach
+                @foreach ($categories as $cat)
+                    @php 
+                        $catCount = App\Models\Product::countForType($cat->value);
+                    @endphp
+                    <a href="{{ route('home', array_filter(['category' => $cat->value, 'search' => $searchTerm])) }}" 
+                       class="filter-pill {{ $selectedCategory === $cat->value ? 'active' : '' }}">
+                        <i class="bi {{ $cat->icon() }}"></i> {{ $cat->label() }}
+                        <span class="pill-count">{{ $catCount }}</span>
+                    </a>
+                @endforeach
+            </div>
 
             @if ($searchTerm || $selectedCategory)
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary ms-auto">
-                    <i class="bi bi-x-circle me-1"></i> Réinitialiser les filtres
+                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary text-nowrap" title="Réinitialiser les filtres">
+                    <i class="bi bi-x-circle me-1"></i><span class="d-none d-sm-inline">Effacer</span>
                 </a>
             @endif
         </div>
@@ -120,7 +122,7 @@
                                                 <span class="spec-tag"><i class="bi bi-aspect-ratio me-1"></i>{{ $product->taille }}</span>
                                             @endif
                                             @if ($product->unite)
-                                                <span class="spec-tag"><i class="bi bi-box me-1"></i>{{ $product->quantite ? $product->quantite . ' ' : '' }}{{ $product->unite }}</span>
+                                                <span class="spec-tag" title="Conditionnement"><i class="bi bi-box me-1"></i>{{ $product->unite }}</span>
                                             @endif
                                         </div>
 

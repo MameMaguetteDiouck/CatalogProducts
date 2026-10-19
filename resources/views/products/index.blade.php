@@ -83,53 +83,53 @@
                 </div>
             </a>
         </div>
-    </div>
-
-    <!-- Barre d'actions & Filtres (Défilement horizontal fluide sur mobile) -->
-    <div class="card border rounded-3 p-2 p-md-3 shadow-sm bg-white mb-4">
-        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-            <!-- Onglets Catégories avec scroll tactile sur mobile -->
-            <div class="category-scroll-wrapper">
-                <a href="{{ route('products.index', array_filter(['search' => $searchTerm, 'stock_status' => $stockStatus, 'per_page' => $perPage])) }}" 
-                   class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
-                    Tous <span class="pill-count">{{ $globalTotalCount }}</span>
-                </a>
-                @foreach ($categories as $category)
-                    @php $count = $categoryCounts[$category->value]['count'] ?? 0; @endphp
-                    <a href="{{ route('products.index', array_filter(['category' => $category->value, 'search' => $searchTerm, 'stock_status' => $stockStatus, 'per_page' => $perPage])) }}" 
-                       class="filter-pill {{ $selectedCategory === $category->value ? 'active' : '' }}">
-                        <i class="bi {{ $category->icon() }}"></i> {{ $category->label() }}
-                        <span class="pill-count">{{ $count }}</span>
-                    </a>
-                @endforeach
-            </div>
-
-            <!-- Recherche & Réinitialisation -->
-            <form action="{{ route('products.index') }}" method="GET" class="d-flex gap-2 w-100 w-lg-auto">
-                @if ($selectedCategory)
-                    <input type="hidden" name="category" value="{{ $selectedCategory }}">
-                @endif
-                @if ($stockStatus)
-                    <input type="hidden" name="stock_status" value="{{ $stockStatus }}">
-                @endif
-                @if ($perPage !== 12)
-                    <input type="hidden" name="per_page" value="{{ $perPage }}">
-                @endif
-                <div class="input-group input-group-sm flex-grow-1" style="min-width: 200px;">
+      <!-- Barre d'actions & Filtres (Recherche & Onglets Catégories) -->
+    <div class="card border rounded-3 p-3 shadow-sm bg-white mb-4">
+        <!-- Recherche & Réinitialisation -->
+        <form action="{{ route('products.index') }}" method="GET" class="mb-3">
+            @if ($selectedCategory)
+                <input type="hidden" name="category" value="{{ $selectedCategory }}">
+            @endif
+            @if ($stockStatus)
+                <input type="hidden" name="stock_status" value="{{ $stockStatus }}">
+            @endif
+            @if ($perPage !== 12)
+                <input type="hidden" name="per_page" value="{{ $perPage }}">
+            @endif
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm flex-grow-1">
                     <span class="input-group-text bg-light border-end-0 text-muted">
                         <i class="bi bi-search"></i>
                     </span>
                     <input type="search" name="search" class="form-control bg-light border-start-0" 
-                           placeholder="Rechercher référence, marque..." value="{{ $searchTerm ?? '' }}">
+                           placeholder="Rechercher par référence, libellé, marque..." value="{{ $searchTerm ?? '' }}">
                 </div>
-                <button type="submit" class="btn btn-sm btn-brand text-nowrap">Filtrer</button>
+                <button type="submit" class="btn btn-sm btn-brand text-nowrap">
+                    <i class="bi bi-search me-1 d-none d-sm-inline"></i>Filtrer
+                </button>
                 @if ($searchTerm || $selectedCategory || $stockStatus)
                     <a href="{{ route('products.index', array_filter(['per_page' => $perPage !== 12 ? $perPage : null])) }}" 
-                       class="btn btn-sm btn-outline-secondary" title="Réinitialiser tous les filtres">
-                        <i class="bi bi-x-lg"></i>
+                       class="btn btn-sm btn-outline-secondary text-nowrap" title="Réinitialiser tous les filtres">
+                        <i class="bi bi-x-lg me-1"></i><span class="d-none d-sm-inline">Effacer</span>
                     </a>
                 @endif
-            </form>
+            </div>
+        </form>
+
+        <!-- Onglets Catégories avec scroll tactile sur mobile et pleine largeur sur desktop -->
+        <div class="category-scroll-wrapper">
+            <a href="{{ route('products.index', array_filter(['search' => $searchTerm, 'stock_status' => $stockStatus, 'per_page' => $perPage])) }}" 
+               class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
+                Tous <span class="pill-count">{{ $globalTotalCount }}</span>
+            </a>
+            @foreach ($categories as $category)
+                @php $count = $categoryCounts[$category->value]['count'] ?? 0; @endphp
+                <a href="{{ route('products.index', array_filter(['category' => $category->value, 'search' => $searchTerm, 'stock_status' => $stockStatus, 'per_page' => $perPage])) }}" 
+                    class="filter-pill {{ $selectedCategory === $category->value ? 'active' : '' }}">
+                    <i class="bi {{ $category->icon() }}"></i> {{ $category->label() }}
+                    <span class="pill-count">{{ $count }}</span>
+                </a>
+            @endforeach
         </div>
     </div>
 
@@ -205,8 +205,8 @@
                                 @endif
                             </div>
 
-                            <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                                <div class="fs-5 fw-bold text-dark">
+                            <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div class="fs-5 fw-bold text-dark text-nowrap">
                                     {{ $product->formattedPrice() }}
                                 </div>
                                 <div class="btn-group btn-group-sm">
