@@ -1,87 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CatalogPro — Plateforme Centrale de Produits</title>
-    @vite(['resources/sass/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-</head>
-
-<body class="d-flex flex-column min-vh-100">
-    <!-- Navbar Supérieure Moderne -->
-    <header class="catalog-navbar sticky-top py-2">
-        <div class="container d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-4">
-                <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="{{ route('home') }}">
-                    <span class="d-inline-flex align-items-center justify-content-center text-white rounded-3 shadow-sm" 
-                          style="width: 36px; height: 36px; background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);">
-                        <i class="bi bi-box-seam"></i>
-                    </span>
-                    <span class="fs-5 fw-bold text-dark">Catalog<span style="color: #4f46e5;">Pro</span></span>
-                </a>
-
-                <!-- Menu de navigation : UNIQUEMENT pour les utilisateurs connectés -->
-                @auth
-                    <nav class="d-none d-md-flex align-items-center gap-1">
-                        <a href="{{ route('home') }}" class="nav-link active">Vitrine</a>
-                        <a href="{{ route('products.index') }}" class="nav-link">Espace Gestion</a>
-                        <a href="{{ route('products.create') }}" class="nav-link">Nouveau Produit</a>
-                    </nav>
-                @endauth
-            </div>
-
-            <!-- Barre de recherche rapide de la vitrine -->
-            <div class="d-none d-lg-block" style="width: 380px;">
-                <form action="{{ route('home') }}" method="GET">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light border-end-0 text-muted">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="search" name="search" class="form-control bg-light border-start-0" 
-                               value="{{ $searchTerm ?? '' }}"
-                               placeholder="Rechercher une référence, marque..." aria-label="Rechercher">
-                    </div>
-                </form>
-            </div>
-
-            <!-- Authentification & Profil -->
-            <div class="d-flex align-items-center gap-2">
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-brand btn-sm">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
-                    </a>
-                @endguest
-                @auth
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light border dropdown-toggle fw-semibold d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                            <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary fw-bold" style="width: 26px; height: 26px; font-size: 0.75rem;">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </span>
-                            <span>{{ Auth::user()->name }}</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                            <li class="px-3 py-1 text-muted small border-bottom">
-                                Connecté en tant que<br><strong>{{ Auth::user()->email }}</strong>
-                            </li>
-                            <li><a class="dropdown-item py-2" href="{{ route('products.index') }}"><i class="bi bi-grid me-2"></i>Espace Gestion</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger py-2">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                @endauth
-            </div>
-        </div>
-    </header>
-
+@section('content')
     <!-- Section Hero -->
     <section class="py-4 py-lg-5 bg-white border-bottom">
         <div class="container">
@@ -131,7 +50,7 @@
     </section>
 
     <!-- Contenu Principal Vitrine -->
-    <main class="container py-5 flex-grow-1" id="catalogue">
+    <div class="container py-5 flex-grow-1" id="catalogue">
         <!-- Filtres rapides par Univers -->
         <div class="d-flex flex-wrap align-items-center gap-2 mb-4 pb-2">
             <a href="{{ route('home') }}" class="filter-pill {{ empty($selectedCategory) ? 'active' : '' }}">
@@ -178,7 +97,7 @@
                                     <div class="product-card-thumb">
                                         <img src="{{ $product->imageUrl() }}" alt="{{ $product->libelle }}">
                                         <span class="badge-category cat-{{ $product->type }} position-absolute top-0 start-0 m-3">
-                                            {{ $cat->label() }}
+                                            {{ ucfirst($product->type) }}
                                         </span>
                                     </div>
                                     <div class="p-3 d-flex flex-column flex-grow-1">
@@ -189,7 +108,7 @@
                                             {{ $product->description ?? 'Référence certifiée conforme au catalogue.' }}
                                         </p>
 
-                                        <!-- Attributs spécifiques dynamiques -->
+                                        <!-- Attributs spécifiques -->
                                         <div class="d-flex flex-wrap gap-1 mb-3">
                                             @if ($product->garantie)
                                                 <span class="spec-tag"><i class="bi bi-shield-check me-1"></i>{{ $product->garantie }}</span>
@@ -202,9 +121,6 @@
                                             @endif
                                             @if ($product->unite)
                                                 <span class="spec-tag"><i class="bi bi-box me-1"></i>{{ $product->quantite ? $product->quantite . ' ' : '' }}{{ $product->unite }}</span>
-                                            @endif
-                                            @if ($product->categorie)
-                                                <span class="spec-tag">{{ $product->categorie }}</span>
                                             @endif
                                         </div>
 
@@ -219,14 +135,11 @@
                                         </div>
 
                                         <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <div class="fs-5 fw-bold text-dark mb-0">
-                                                    {{ $product->formattedPrice() }}
-                                                </div>
+                                            <div class="fs-5 fw-bold text-dark">
+                                                {{ $product->formattedPrice() }}
                                             </div>
-                                            <!-- Bouton purement dédié à la consultation des détails -->
                                             <a href="{{ route('products.show', $product->id) }}" class="btn btn-brand btn-sm">
-                                                Voir détails
+                                                <i class="bi bi-eye me-1"></i> Détails
                                             </a>
                                         </div>
                                     </div>
@@ -252,29 +165,5 @@
                 </div>
             </div>
         @endif
-    </main>
-
-    <!-- Footer Corporate Professionnel -->
-    <footer class="catalog-footer py-4 mt-auto">
-        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-            <div class="d-flex align-items-center gap-2">
-                <span class="d-inline-flex align-items-center justify-content-center text-white rounded-2" 
-                      style="width: 24px; height: 24px; background: #4f46e5; font-size: 0.75rem;">
-                    <i class="bi bi-box-seam"></i>
-                </span>
-                <span class="fw-bold text-dark">CatalogPro</span>
-                <span class="text-muted ms-2">&copy; {{ date('Y') }} Tous droits réservés.</span>
-            </div>
-            <div class="d-flex align-items-center gap-3 small">
-                <a href="{{ route('home') }}" class="text-muted text-decoration-none">Vitrine</a>
-                @auth
-                    <a href="{{ route('products.index') }}" class="text-muted text-decoration-none">Espace Gestion</a>
-                @endauth
-                @guest
-                    <a href="{{ route('login') }}" class="text-muted text-decoration-none">Connexion</a>
-                @endguest
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+    </div>
+@endsection

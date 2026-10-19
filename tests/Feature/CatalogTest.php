@@ -61,4 +61,20 @@ class CatalogTest extends TestCase
         $response->assertRedirect();
         $this->assertAuthenticated();
     }
+
+    public function test_authenticated_user_sees_profile_and_logout_on_homepage_and_management(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $responseHome = $this->actingAs($user)->get('/');
+        $responseHome->assertStatus(200);
+        $responseHome->assertSee('Déconnexion');
+        $responseHome->assertSee($user->name);
+
+        $responseMgmt = $this->actingAs($user)->get(route('products.index'));
+        $responseMgmt->assertStatus(200);
+        $responseMgmt->assertSee('Déconnexion');
+        $responseMgmt->assertSee($user->name);
+    }
 }

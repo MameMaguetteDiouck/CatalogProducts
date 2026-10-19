@@ -45,6 +45,22 @@
                 @endauth
             </div>
 
+            <!-- Barre de recherche rapide de la vitrine -->
+            @if (request()->routeIs('home'))
+                <div class="d-none d-lg-block" style="width: 360px;">
+                    <form action="{{ route('home') }}" method="GET">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="search" name="search" class="form-control bg-light border-start-0" 
+                                   value="{{ request('search') }}"
+                                   placeholder="Rechercher une référence, marque..." aria-label="Rechercher">
+                        </div>
+                    </form>
+                </div>
+            @endif
+
             <!-- Espace Utilisateur & Connexion -->
             <div class="d-flex align-items-center gap-2">
                 @guest
