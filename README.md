@@ -191,5 +191,5 @@ resources/
 
 ---
 
-## 📄 Licence
-Ce projet est open-source sous licence [MIT](LICENSE).
+## 👤 Auteur & Droits
+Développé par **Mame Maguette Diouck** dans le cadre de son portfolio technique. Tous droits réservés.
