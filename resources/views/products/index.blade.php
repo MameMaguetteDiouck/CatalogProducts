@@ -167,14 +167,16 @@
                                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-outline-primary" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" 
-                                          onsubmit="return confirm('Confirmez-vous la suppression de ce produit ?');" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    @can('delete-product')
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" 
+                                              onsubmit="return confirm('Confirmez-vous la suppression de ce produit ?');" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

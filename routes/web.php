@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Administration des utilisateurs et attribution des rôles
+    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
 });
 
 // Authentification (Connexion, Déconnexion)

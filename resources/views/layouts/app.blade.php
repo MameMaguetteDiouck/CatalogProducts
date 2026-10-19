@@ -36,6 +36,11 @@
                         <a href="{{ route('products.create') }}" class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}">
                             <i class="bi bi-plus-circle me-1"></i> Nouveau Produit
                         </a>
+                        @can('manage-users')
+                            <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                <i class="bi bi-people me-1"></i> Équipe & Rôles
+                            </a>
+                        @endcan
                     </nav>
                 @endauth
             </div>
@@ -56,10 +61,17 @@
                             <span>{{ Auth::user()->name }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                            <li class="px-3 py-1 text-muted small border-bottom">
-                                Connecté en tant que<br><strong>{{ Auth::user()->email }}</strong>
+                            <li class="px-3 py-2 text-muted small border-bottom">
+                                <div>Connecté en tant que</div>
+                                <div class="fw-bold text-dark text-truncate">{{ Auth::user()->email }}</div>
+                                <div class="mt-1">
+                                    <span class="badge {{ Auth::user()->role->badgeClass() }}">{{ Auth::user()->roleLabel() }}</span>
+                                </div>
                             </li>
                             <li><a class="dropdown-item py-2" href="{{ route('products.index') }}"><i class="bi bi-grid me-2"></i>Espace Gestion</a></li>
+                            @can('manage-users')
+                                <li><a class="dropdown-item py-2" href="{{ route('users.index') }}"><i class="bi bi-people me-2"></i>Équipe & Rôles</a></li>
+                            @endcan
                             <li><a class="dropdown-item py-2" href="{{ route('home') }}"><i class="bi bi-shop me-2"></i>Voir la vitrine</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>

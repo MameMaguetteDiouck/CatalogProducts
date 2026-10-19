@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -153,6 +154,8 @@ class ProductController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
+        Gate::authorize('delete-product');
+
         $product = Product::findOrFail($id);
 
         if ($product->image) {

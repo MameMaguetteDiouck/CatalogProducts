@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -9,26 +10,28 @@ use Illuminate\Support\Facades\Hash;
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds with roles.
      */
     public function run(): void
     {
-        // Administrateur par défaut documenté dans le README
+        // 1. Administrateur principal (accès total + gestion des utilisateurs)
         User::updateOrCreate(
             ['email' => 'admin@catalog.local'],
             [
-                'name' => 'Administrateur Portfolio',
+                'name' => 'Directeur Général',
                 'password' => Hash::make('Password123!'),
+                'role' => UserRole::ADMIN,
                 'email_verified_at' => now(),
             ]
         );
 
-        // Utilisateur standard de test
+        // 2. Gestionnaire de catalogue (gestion des produits sans suppression ni gestion d'équipe)
         User::updateOrCreate(
             ['email' => 'demo@catalog.local'],
             [
-                'name' => 'Utilisateur Démo',
+                'name' => 'Gestionnaire des Stocks',
                 'password' => Hash::make('Password123!'),
+                'role' => UserRole::MANAGER,
                 'email_verified_at' => now(),
             ]
         );
