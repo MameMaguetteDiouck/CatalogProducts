@@ -14,7 +14,7 @@ class CatalogTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('CatalogProducts');
+        $response->assertSee('CatalogPro');
     }
 
     public function test_products_index_lists_products(): void

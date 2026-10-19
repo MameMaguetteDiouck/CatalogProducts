@@ -72,16 +72,27 @@ class Product extends Model
     }
 
     /**
-     * Returns a lightweight SVG placeholder encoded as data URI.
+     * Returns a lightweight SVG placeholder tailored to the product category.
      */
     protected function defaultPlaceholder(): string
     {
-        $label = htmlspecialchars($this->libelle ?? 'Produit', ENT_QUOTES, 'UTF-8');
+        $colorMap = [
+            'aliments' => ['bg' => '#ecfdf5', 'accent' => '#059669', 'icon' => '🫒', 'label' => 'Alimentaire'],
+            'electronique' => ['bg' => '#f0f9ff', 'accent' => '#0284c7', 'icon' => '🎧', 'label' => 'Électronique'],
+            'habillements' => ['bg' => '#fffbeb', 'accent' => '#d97706', 'icon' => '🧥', 'label' => 'Textile & Mode'],
+            'cosmetiques' => ['bg' => '#f5f3ff', 'accent' => '#7c3aed', 'icon' => '🧴', 'label' => 'Cosmétiques'],
+            'btps' => ['bg' => '#f1f5f9', 'accent' => '#475569', 'icon' => '🧱', 'label' => 'BTP & Matériaux'],
+        ];
+
+        $theme = $colorMap[$this->type] ?? ['bg' => '#f8fafc', 'accent' => '#4f46e5', 'icon' => '📦', 'label' => 'Catalogue'];
+
         $svg = <<<SVG
-        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
-            <rect width="100%" height="100%" fill="#f1f5f9"/>
-            <text x="50%" y="45%" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#64748b" text-anchor="middle">{$label}</text>
-            <text x="50%" y="60%" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">Visuel non disponible</text>
+        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260">
+            <rect width="100%" height="100%" fill="{$theme['bg']}"/>
+            <circle cx="200" cy="100" r="45" fill="{$theme['accent']}" opacity="0.15"/>
+            <text x="200" y="112" font-size="34" text-anchor="middle">{$theme['icon']}</text>
+            <text x="200" y="170" font-family="-apple-system, system-ui, sans-serif" font-size="13" font-weight="700" fill="{$theme['accent']}" text-anchor="middle">{$theme['label']}</text>
+            <text x="200" y="192" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Référence certifiée</text>
         </svg>
         SVG;
 

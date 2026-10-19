@@ -4,9 +4,9 @@
 @endphp
 
 @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Veuillez corriger les erreurs ci-dessous :</strong>
-        <ul class="mb-0 mt-2">
+    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+        <strong>Veuillez corriger les informations saisies :</strong>
+        <ul class="mb-0 mt-2 small">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
@@ -24,9 +24,9 @@
     @endif
 
     <div class="row g-3">
-        <!-- Catégorie (Déclencheur NoSQL) -->
+        <!-- Rayon / Univers -->
         <div class="col-md-6">
-            <label for="type" class="form-label fw-bold">Catégorie de produit <span class="text-danger">*</span></label>
+            <label for="type" class="form-label fw-semibold small text-muted text-uppercase">Rayon / Univers <span class="text-danger">*</span></label>
             <select name="type" id="type" class="form-select @error('type') is-invalid @enderror" required onchange="toggleCategoryAttributes(this.value)">
                 @foreach (App\Enums\ProductCategory::cases() as $category)
                     <option value="{{ $category->value }}" {{ $selectedType === $category->value ? 'selected' : '' }}>
@@ -41,9 +41,9 @@
 
         <!-- Libellé -->
         <div class="col-md-6">
-            <label for="libelle" class="form-label fw-bold">Libellé / Nom <span class="text-danger">*</span></label>
+            <label for="libelle" class="form-label fw-semibold small text-muted text-uppercase">Désignation du produit <span class="text-danger">*</span></label>
             <input type="text" name="libelle" id="libelle" class="form-control @error('libelle') is-invalid @enderror" 
-                   value="{{ old('libelle', $product->libelle ?? '') }}" required placeholder="Ex: Ordinateur portable HP">
+                   value="{{ old('libelle', $product->libelle ?? '') }}" required placeholder="Ex : Casque Audio Sans-Fil ANC Pro">
             @error('libelle')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -51,9 +51,9 @@
 
         <!-- Prix -->
         <div class="col-md-6">
-            <label for="prix" class="form-label fw-bold">Prix (FCFA) <span class="text-danger">*</span></label>
+            <label for="prix" class="form-label fw-semibold small text-muted text-uppercase">Prix unitaire (€) <span class="text-danger">*</span></label>
             <input type="number" step="0.01" min="0" name="prix" id="prix" class="form-control @error('prix') is-invalid @enderror" 
-                   value="{{ old('prix', $product->prix ?? '') }}" required placeholder="Ex: 250000">
+                   value="{{ old('prix', $product->prix ?? '') }}" required placeholder="Ex : 199.99">
             @error('prix')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -61,7 +61,7 @@
 
         <!-- Stock -->
         <div class="col-md-6">
-            <label for="stock" class="form-label fw-bold">Stock disponible <span class="text-danger">*</span></label>
+            <label for="stock" class="form-label fw-semibold small text-muted text-uppercase">Stock disponible <span class="text-danger">*</span></label>
             <input type="number" min="0" name="stock" id="stock" class="form-control @error('stock') is-invalid @enderror" 
                    value="{{ old('stock', $product->stock ?? 1) }}" required>
             @error('stock')
@@ -71,93 +71,104 @@
 
         <!-- Description -->
         <div class="col-12">
-            <label for="description" class="form-label fw-bold">Description complète <span class="text-danger">*</span></label>
+            <label for="description" class="form-label fw-semibold small text-muted text-uppercase">Description détaillée <span class="text-danger">*</span></label>
             <textarea name="description" id="description" rows="3" class="form-control @error('description') is-invalid @enderror" 
-                      required placeholder="Détails du produit...">{{ old('description', $product->description ?? '') }}</textarea>
+                      required placeholder="Spécifications, usages, arguments de vente...">{{ old('description', $product->description ?? '') }}</textarea>
             @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-        <!-- ================= ATTRIBUTS DYNAMIQUES NOSQL ================= -->
+        <!-- Caractéristiques spécifiques dynamiques -->
         <div class="col-12">
-            <div class="p-3 bg-light rounded border">
-                <h6 class="text-primary fw-bold mb-3">
-                    <i class="bi bi-diagram-3 me-2"></i>Attributs spécifiques NoSQL (Polymorphisme)
-                </h6>
+            <div class="p-3 rounded-3 border" style="background: #f8fafc;">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="d-inline-flex align-items-center justify-content-center text-white rounded-2" 
+                          style="width: 22px; height: 22px; background: #4f46e5; font-size: 0.75rem;">
+                        <i class="bi bi-sliders"></i>
+                    </span>
+                    <h6 class="fw-bold text-dark m-0 small text-uppercase" style="letter-spacing: 0.5px;">
+                        Caractéristiques spécifiques de l'univers
+                    </h6>
+                </div>
 
-                <!-- Aliments : Unité, Quantité, Sous-Catégorie -->
+                <!-- Aliments -->
                 <div id="attrs-aliments" class="category-attribute-group row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Unité de mesure <span class="text-danger">*</span></label>
-                        <input type="text" name="unite" class="form-control dynamic-input" 
-                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex: Kg, Litre, Pièce">
+                        <label class="form-label small fw-semibold text-muted">Unité de mesure <span class="text-danger">*</span></label>
+                        <input type="text" name="unite" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex : kg, litre, gramme">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Quantité par lot <span class="text-danger">*</span></label>
-                        <input type="number" min="1" name="quantite" class="form-control dynamic-input" 
+                        <label class="form-label small fw-semibold text-muted">Quantité par unité <span class="text-danger">*</span></label>
+                        <input type="number" min="1" name="quantite" class="form-control form-control-sm dynamic-input" 
                                value="{{ old('quantite', $product->quantite ?? 1) }}" placeholder="1">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Sous-catégorie alimentaire</label>
-                        <input type="text" name="categorie" class="form-control dynamic-input" 
-                               value="{{ old('categorie', $product->categorie ?? '') }}" placeholder="Ex: Fruits & Légumes">
+                        <label class="form-label small fw-semibold text-muted">Sous-catégorie alimentaire</label>
+                        <input type="text" name="categorie" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('categorie', $product->categorie ?? '') }}" placeholder="Ex : Épicerie fine, Boissons">
                     </div>
                 </div>
 
-                <!-- Électronique : Garantie, Marque -->
+                <!-- Électronique -->
                 <div id="attrs-electronique" class="category-attribute-group row g-3 d-none">
                     <div class="col-md-6">
-                        <label class="form-label">Durée de garantie <span class="text-danger">*</span></label>
-                        <input type="text" name="garantie" class="form-control dynamic-input" 
-                               value="{{ old('garantie', $product->garantie ?? '') }}" placeholder="Ex: 12 mois, 2 ans">
+                        <label class="form-label small fw-semibold text-muted">Durée de garantie <span class="text-danger">*</span></label>
+                        <input type="text" name="garantie" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('garantie', $product->garantie ?? '') }}" placeholder="Ex : 24 mois, 3 ans">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Marque constructeur</label>
-                        <input type="text" name="marque" class="form-control dynamic-input" 
-                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex: Apple, Samsung, Sony">
+                        <label class="form-label small fw-semibold text-muted">Marque constructeur</label>
+                        <input type="text" name="marque" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex : Sony, Apple, Bose">
                     </div>
                 </div>
 
-                <!-- Habillements : Marque, Taille -->
+                <!-- Habillements -->
                 <div id="attrs-habillements" class="category-attribute-group row g-3 d-none">
                     <div class="col-md-6">
-                        <label class="form-label">Marque / Créateur <span class="text-danger">*</span></label>
-                        <input type="text" name="marque" class="form-control dynamic-input" 
-                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex: Nike, Zara, Lacoste">
+                        <label class="form-label small fw-semibold text-muted">Marque / Créateur <span class="text-danger">*</span></label>
+                        <input type="text" name="marque" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex : Atelier Nord, Nike">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Taille / Pointure</label>
-                        <input type="text" name="taille" class="form-control dynamic-input" 
-                               value="{{ old('taille', $product->taille ?? '') }}" placeholder="Ex: S, M, L, XL, 42">
+                        <label class="form-label small fw-semibold text-muted">Taille / Pointure</label>
+                        <input type="text" name="taille" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('taille', $product->taille ?? '') }}" placeholder="Ex : S, M, L, XL, 42">
                     </div>
                 </div>
 
-                <!-- Cosmétiques : Marque, Unité, Quantité -->
+                <!-- Cosmétiques -->
                 <div id="attrs-cosmetiques" class="category-attribute-group row g-3 d-none">
                     <div class="col-md-4">
-                        <label class="form-label">Marque cosmétique <span class="text-danger">*</span></label>
-                        <input type="text" name="marque" class="form-control dynamic-input" 
-                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex: L'Oréal, Nivea">
+                        <label class="form-label small fw-semibold text-muted">Marque <span class="text-danger">*</span></label>
+                        <input type="text" name="marque" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('marque', $product->marque ?? '') }}" placeholder="Ex : L'Oréal, Nivea">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Contenance / Unité <span class="text-danger">*</span></label>
-                        <input type="text" name="unite" class="form-control dynamic-input" 
-                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex: 250ml, 50g">
+                        <label class="form-label small fw-semibold text-muted">Contenance / Format <span class="text-danger">*</span></label>
+                        <input type="text" name="unite" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex : Flacon 50ml, Tube 100g">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Quantité</label>
-                        <input type="number" min="1" name="quantite" class="form-control dynamic-input" 
-                               value="{{ old('quantite', $product->quantite ?? 1) }}">
+                        <label class="form-label small fw-semibold text-muted">Type de soin</label>
+                        <input type="text" name="categorie" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('categorie', $product->categorie ?? '') }}" placeholder="Ex : Soin du visage, Parfumerie">
                     </div>
                 </div>
 
-                <!-- BTP : Unité -->
+                <!-- BTP -->
                 <div id="attrs-btps" class="category-attribute-group row g-3 d-none">
-                    <div class="col-md-12">
-                        <label class="form-label">Unité de vente BTP <span class="text-danger">*</span></label>
-                        <input type="text" name="unite" class="form-control dynamic-input" 
-                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex: Sac de 50kg, Tonne, Mètre">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-muted">Conditionnement / Unité <span class="text-danger">*</span></label>
+                        <input type="text" name="unite" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('unite', $product->unite ?? '') }}" placeholder="Ex : Sac de 35kg, Palette, Mètre">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-muted">Quantité par unité</label>
+                        <input type="number" min="1" name="quantite" class="form-control form-control-sm dynamic-input" 
+                               value="{{ old('quantite', $product->quantite ?? 1) }}" placeholder="1">
                     </div>
                 </div>
             </div>
@@ -165,13 +176,13 @@
 
         <!-- Image du produit -->
         <div class="col-12">
-            <label for="image" class="form-label fw-bold">Image du produit</label>
+            <label for="image" class="form-label fw-semibold small text-muted text-uppercase">Visuel du produit</label>
             <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
-            <div class="form-text">Formats acceptés : PNG, JPG, JPEG, WEBP (Max 2 Mo).</div>
+            <div class="form-text small">Formats acceptés : WEBP, PNG, JPG (Max 2 Mo). En cas d'absence, un badge dynamique SVG sera généré.</div>
             @if ($isEdit && $product->image)
                 <div class="mt-2 d-flex align-items-center">
-                    <img src="{{ $product->imageUrl() }}" alt="{{ $product->libelle }}" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
-                    <span class="small text-muted">Image actuelle</span>
+                    <img src="{{ $product->imageUrl() }}" alt="{{ $product->libelle }}" class="img-thumbnail me-3 rounded-3" style="width: 72px; height: 72px; object-fit: contain;">
+                    <span class="small text-muted">Visuel actuellement actif</span>
                 </div>
             @endif
             @error('image')
@@ -179,13 +190,13 @@
             @enderror
         </div>
 
-        <!-- Boutons d'action -->
-        <div class="col-12 d-flex justify-content-between mt-4">
-            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">
+        <!-- Actions -->
+        <div class="col-12 d-flex justify-content-between align-items-center pt-3 border-top mt-4">
+            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left me-1"></i> Annuler
             </a>
-            <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-check2-circle me-1"></i> {{ $isEdit ? 'Mettre à jour le produit' : 'Enregistrer le produit' }}
+            <button type="submit" class="btn btn-brand btn-sm">
+                <i class="bi bi-check2-circle me-1"></i> {{ $isEdit ? 'Mettre à jour la fiche' : 'Créer la référence' }}
             </button>
         </div>
     </div>
@@ -195,7 +206,6 @@
     function toggleCategoryAttributes(category) {
         document.querySelectorAll('.category-attribute-group').forEach(el => {
             el.classList.add('d-none');
-            // Disable inputs in hidden sections so they don't submit invalid data
             el.querySelectorAll('input').forEach(input => input.disabled = true);
         });
 
