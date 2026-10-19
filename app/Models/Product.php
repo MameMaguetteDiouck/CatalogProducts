@@ -80,27 +80,45 @@ class Product extends Model
     }
 
     /**
-     * Returns a lightweight SVG placeholder tailored to the product category.
+     * Returns a clean, lightweight SVG placeholder displaying the product name and initials.
      */
     protected function defaultPlaceholder(): string
     {
+        $label = htmlspecialchars($this->libelle ?? 'Produit', ENT_QUOTES, 'UTF-8');
+
+        // Extract initials from product title (e.g. "Riz Brisé" -> "RB")
+        $words = preg_split('/\s+/', trim($this->libelle ?? 'CP'));
+        $initials = '';
+        if (!empty($words[0])) {
+            $initials .= mb_substr($words[0], 0, 1);
+        }
+        if (!empty($words[1])) {
+            $initials .= mb_substr($words[1], 0, 1);
+        }
+        $initials = strtoupper(htmlspecialchars($initials ?: 'CP', ENT_QUOTES, 'UTF-8'));
+
         $colorMap = [
-            'aliments' => ['bg' => '#ecfdf5', 'accent' => '#059669', 'icon' => '🫒', 'label' => 'Alimentaire'],
-            'electronique' => ['bg' => '#f0f9ff', 'accent' => '#0284c7', 'icon' => '🎧', 'label' => 'Électronique'],
-            'habillements' => ['bg' => '#fffbeb', 'accent' => '#d97706', 'icon' => '🧥', 'label' => 'Textile & Mode'],
-            'cosmetiques' => ['bg' => '#f5f3ff', 'accent' => '#7c3aed', 'icon' => '🧴', 'label' => 'Cosmétiques'],
-            'btps' => ['bg' => '#f1f5f9', 'accent' => '#475569', 'icon' => '🧱', 'label' => 'BTP & Matériaux'],
+            'aliments' => ['bg' => '#ecfdf5', 'accent' => '#059669', 'badge' => '#d1fae5'],
+            'electronique' => ['bg' => '#f0f9ff', 'accent' => '#0284c7', 'badge' => '#e0f2fe'],
+            'habillements' => ['bg' => '#fffbeb', 'accent' => '#d97706', 'badge' => '#fef3c7'],
+            'cosmetiques' => ['bg' => '#f5f3ff', 'accent' => '#7c3aed', 'badge' => '#ede9fe'],
+            'btps' => ['bg' => '#f1f5f9', 'accent' => '#475569', 'badge' => '#e2e8f0'],
         ];
 
-        $theme = $colorMap[$this->type] ?? ['bg' => '#f8fafc', 'accent' => '#4f46e5', 'icon' => '📦', 'label' => 'Catalogue'];
+        $theme = $colorMap[$this->type] ?? ['bg' => '#f8fafc', 'accent' => '#4f46e5', 'badge' => '#eef2ff'];
+
+        // Truncate name if too long for clean SVG fit
+        $displayName = mb_strlen($label) > 30 ? mb_substr($label, 0, 28) . '...' : $label;
 
         $svg = <<<SVG
         <svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260">
             <rect width="100%" height="100%" fill="{$theme['bg']}"/>
-            <circle cx="200" cy="100" r="45" fill="{$theme['accent']}" opacity="0.15"/>
-            <text x="200" y="112" font-size="34" text-anchor="middle">{$theme['icon']}</text>
-            <text x="200" y="170" font-family="-apple-system, system-ui, sans-serif" font-size="13" font-weight="700" fill="{$theme['accent']}" text-anchor="middle">{$theme['label']}</text>
-            <text x="200" y="192" font-family="-apple-system, system-ui, sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Référence certifiée</text>
+            <!-- Monogram badge -->
+            <circle cx="200" cy="95" r="42" fill="{$theme['badge']}"/>
+            <text x="200" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" fill="{$theme['accent']}" text-anchor="middle">{$initials}</text>
+            <!-- Product Name -->
+            <text x="200" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">{$displayName}</text>
+            <text x="200" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="500" fill="{$theme['accent']}" text-anchor="middle">Référence Catalogue</text>
         </svg>
         SVG;
 
