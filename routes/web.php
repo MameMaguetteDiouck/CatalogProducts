@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Route;
 // Vitrine publique
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
-// Consultation publique de la fiche détail d'un produit
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-
 // Espace de gestion (strictement réservé aux utilisateurs authentifiés)
 Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -37,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'showChangeForm'])->name('password.first_login');
     Route::post('/password/first-login', [\App\Http\Controllers\Auth\ForcePasswordChangeController::class, 'updatePassword'])->name('password.first_login.update');
 });
+
+// Consultation publique de la fiche détail d'un produit (enregistré après /products/create)
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 // Authentification (Connexion, Déconnexion sans inscription ni reset email/SMTP)
 Auth::routes(['register' => false, 'reset' => false]);

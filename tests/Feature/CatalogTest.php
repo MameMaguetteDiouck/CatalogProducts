@@ -77,4 +77,47 @@ class CatalogTest extends TestCase
         $responseMgmt->assertSee('Déconnexion');
         $responseMgmt->assertSee($user->name);
     }
+
+    public function test_authenticated_user_can_access_product_create_form(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $response = $this->actingAs($user)->get(route('products.create'));
+
+        $response->assertStatus(200);
+        $response->assertSee("Création d'une Nouvelle Référence", false);
+        $response->assertSee('Désignation du produit');
+        $response->assertSee('Prix unitaire (FCFA)');
+    }
+
+    public function test_authenticated_user_can_store_new_product_with_category_attributes(): void
+    {
+        $user = User::first();
+        $this->assertNotNull($user);
+
+        $productData = [
+            'libelle' => 'Bazin Riche Sénégalais Test',
+            'prix' => 45000,
+            'stock' => 15,
+            'type' => 'habillements',
+            'description' => 'Tissu bazin brodé de haute qualité pour cérémonies traditionnelles.',
+            'marque' => 'Getzner Prestige',
+            'taille' => 'Grand Boubou (XL)',
+        ];
+
+        $response = $this->actingAs($user)->post(route('products.store'), $productData);
+
+        $response->assertRedirect(route('products.index', ['category' => 'habillements']));
+        $response->assertSessionHas('success');
+
+        $created = Product::where('libelle', 'Bazin Riche Sénégalais Test')->first();
+        $this->assertNotNull($created);
+        $this->assertEquals(45000, $created->prix);
+        $this->assertEquals('Getzner Prestige', $created->marque);
+        $this->assertEquals('Grand Boubou (XL)', $created->taille);
+        $this->assertEquals('45 000 FCFA', $created->formattedPrice());
+
+        $created->delete();
+    }
 }

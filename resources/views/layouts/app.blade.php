@@ -33,9 +33,6 @@
                         <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
                             <i class="bi bi-grid me-1"></i> Espace Gestion
                         </a>
-                        <a href="{{ route('products.create') }}" class="nav-link {{ request()->routeIs('products.create') ? 'active' : '' }}">
-                            <i class="bi bi-plus-circle me-1"></i> Nouveau Produit
-                        </a>
                         @can('manage-users')
                             <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                                 <i class="bi bi-people me-1"></i> Équipe & Rôles
